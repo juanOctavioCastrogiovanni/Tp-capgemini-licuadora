@@ -33,5 +33,9 @@ public class Direccion {
     private Integer provincia;
 
     /*RELACION un cliente*/
+    @OneToOne
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    private Cliente cliente;
+
 
 }
