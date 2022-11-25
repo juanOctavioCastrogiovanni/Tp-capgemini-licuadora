@@ -1,8 +1,8 @@
-package domain.models.entities;
+package domain.models.entities.venta;
 
-import domain.models.EstadoPublicacion;
+import domain.models.enums.EstadoPublicacion;
 import domain.models.PersistenceId;
-import domain.models.entities.productos.ProductoPersonalizado;
+import domain.models.entities.producto.ProductoPersonalizado;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -30,13 +30,11 @@ public class Publicacion extends PersistenceId {
     @Column(name = "estado")
     private EstadoPublicacion estado;
 
-    /*RELACION un vendedor*/
-    @ManyToOne
-    @JoinColumn(name = "vendedor_id", referencedColumnName = "id")
-    private Vendedor vendedor;
 
-    /*RELACION un producto personalizado*/
-    @OneToOne(mappedBy = "publicacion")
+
+    /*RELACION un producto personalizado - anulo bidireccionalidad*/
+    @OneToOne
+    @JoinColumn(name = "producto_personalizado_id", referencedColumnName = "id")
     private ProductoPersonalizado productoPersonalizado;
 
     /* RELACION Lista de carritos (ventas) */

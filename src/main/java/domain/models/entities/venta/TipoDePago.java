@@ -1,4 +1,4 @@
-package domain.models.entities;
+package domain.models.entities.venta;
 
 import domain.models.PersistenceId;
 import lombok.Getter;
@@ -16,9 +16,9 @@ public class TipoDePago extends PersistenceId {
     @Column(name = "tipo")
     private String tipo;
 
-    /*RELACION MUCHOS A MUCHOS Vendedores*/
+    /*RELACION MUCHOS A MUCHOS Vendedores
     @ManyToMany(mappedBy = "tiposDePagos")
-    private List<Vendedor> vendedores;
+    private List<Vendedor> vendedores;*/
 
     /* RELACION una venta */
     @OneToOne

@@ -1,6 +1,6 @@
 package domain.controllers;
 
-import domain.models.entities.productos.Categoria;
+import domain.models.entities.producto.Categoria;
 import domain.repositories.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

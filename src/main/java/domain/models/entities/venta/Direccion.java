@@ -1,4 +1,4 @@
-package domain.models.entities;
+package domain.models.entities.venta;
 
 import lombok.Getter;
 import lombok.Setter;

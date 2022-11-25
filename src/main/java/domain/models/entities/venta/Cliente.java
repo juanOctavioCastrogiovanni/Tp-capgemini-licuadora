@@ -1,5 +1,6 @@
-package domain.models.entities;
+package domain.models.entities.venta;
 
+import domain.models.Persona;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,28 +12,10 @@ import java.util.List;
 @Table(name = "cliente")
 @Setter
 @Getter
-public class Cliente {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
-    @Column(name = "nombre")
-    private String nombre;
-
-    @Column(name = "apellido")
-    private String apellido;
-
-    @Column(name = "email")
-    private String email;
+public class Cliente extends Persona{
 
     @Column(name = "password")
     private String password;
-
-    @Column(name = "dni")
-    private Integer dni;
-
-    @Column(name = "registrado")
-    private Integer registrado;
 
     /*RELACION una direccion*/
     @OneToOne(mappedBy = "cliente")
