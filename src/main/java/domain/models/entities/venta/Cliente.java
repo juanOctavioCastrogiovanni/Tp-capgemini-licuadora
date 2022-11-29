@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,20 @@ public class Cliente extends Persona{
     private List<Venta> ventas;
 
     public Cliente() {
+        super();
         ventas = new ArrayList<>();
     }
 
     public void agregarVenta(Venta venta) {
         ventas.add(venta);
         venta.setCliente(this);
+    }
+
+    public Cliente(String nombre, String apellido, String dni, String email, String password, Direccion direccion, LocalDateTime fechaCreacion) {
+        super(nombre, apellido, dni, email, fechaCreacion);
+        this.password = password;
+        this.direccion = direccion;
+        ventas = new ArrayList<>();
     }
 
 

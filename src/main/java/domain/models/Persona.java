@@ -1,15 +1,15 @@
 package domain.models;
 
-import domain.models.enums.EstadoDePermiso;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Setter
 @Getter
-public class Persona extends PersistenceId {
+public class Persona extends Persistence {
 
     @Column(name = "nombre")
     private String nombre;
@@ -22,5 +22,17 @@ public class Persona extends PersistenceId {
 
     @Column(name = "email")
     private String email;
+
+    public Persona() {
+        super();
+    }
+
+    public Persona(String nombre, String apellido, String dni, String email, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
+        this.email = email;
+    }
 
 }

@@ -4,20 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import domain.models.Persistence;
 
 
 @Entity
 @Table(name = "ventas")
 @Setter
 @Getter
-public class Venta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
+public class Venta extends Persistence {
 
     @Column(name = "fecha_de_venta", columnDefinition = "DATE")
     private LocalDate fecha;
@@ -32,8 +30,9 @@ public class Venta {
     private String estado;
 
     /*RELACION un Tipo de pago*/
-    @OneToOne(mappedBy = "venta")
-    private TipoDePago tipoDePago;
+    @OneToOne
+    @JoinColumn(name = "venta_id", referencedColumnName = "id")
+    private TipoDePago pago;
 
     /*RELACION un cliente*/
     @ManyToOne
@@ -45,12 +44,24 @@ public class Venta {
     private List<Carrito> carritos;
 
     public Venta() {
+        super();
         carritos = new ArrayList<>();
     }
 
     public void agregarCarrito(Carrito carrito) {
         carritos.add(carrito);
         carrito.setVenta(this);
+    }
+
+    public Venta(LocalDate fecha, LocalTime hora, Float precioTotal, String estado, TipoDePago tipoDePago, Cliente cliente, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.fecha = fecha;
+        this.hora = hora;
+        this.precioTotal = precioTotal;
+        this.estado = estado;
+        this.pago = tipoDePago;
+        this.cliente = cliente;
+        carritos = new ArrayList<>();
     }
 
 }

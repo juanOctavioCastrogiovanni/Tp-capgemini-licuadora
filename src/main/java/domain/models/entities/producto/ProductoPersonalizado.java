@@ -1,11 +1,12 @@
 package domain.models.entities.producto;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import domain.models.PersistenceId;
+import domain.models.Persistence;
 import domain.models.entities.venta.Vendedor;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Table(name = "productos_personalizados")
 @Setter
 @Getter
-public class ProductoPersonalizado extends PersistenceId {
+public class ProductoPersonalizado extends Persistence {
 
 
 
@@ -33,20 +34,28 @@ public class ProductoPersonalizado extends PersistenceId {
 
     //RELACION lista de personalizaciones
     @JsonManagedReference
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "productoPersonalizado", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productoPersonalizado", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Personalizacion> personalizaciones;
 
     @Column(name = "precio")
     private Float precio;
 
     public ProductoPersonalizado() {
+        super();
         personalizaciones = new ArrayList<>();
     }
 
     public void agregarPersonalizacion(Personalizacion personalizacion) {
         personalizaciones.add(personalizacion);
+        personalizacion.setProductoPersonalizado(this);
     }
 
-
+   public ProductoPersonalizado(Producto producto, Vendedor vendedor, Float precio, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.producto = producto;
+        this.vendedor = vendedor;
+        this.precio = precio;
+        personalizaciones = new ArrayList<>();
+    }
 
 }
