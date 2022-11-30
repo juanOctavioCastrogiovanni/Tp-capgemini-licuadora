@@ -20,22 +20,20 @@ public class TipoDePago extends Persistence {
     private String tipo;
 
     //RELACION MUCHOS A MUCHOS Vendedores
-    @JsonBackReference
-    @ManyToMany(mappedBy = "tiposDePagos")
-    private List<Vendedor> vendedores;
 
     /* RELACION una venta */
 
 
+
     public TipoDePago() {
         super();
-        vendedores = new ArrayList<>();
+
 
     }
 
     public TipoDePago(String tipo, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.tipo = tipo;
-        vendedores = new ArrayList<>();
+
     }
 }

@@ -36,8 +36,7 @@ public class Vendedor extends Persona {
     }
 */
     //RELACION MUCHOS A MUCHOS lista de tipos de pagos aceptados
-
-    @JsonManagedReference
+    
     @ManyToMany
     @JoinTable(
             name = "vendedores_tipos_de_pagos",
@@ -48,7 +47,6 @@ public class Vendedor extends Persona {
 
     public void agregarTipoDePago(TipoDePago tipoDePago){
         tiposDePagos.add(tipoDePago);
-        tipoDePago.getVendedores().add(this);
     }
 
 
