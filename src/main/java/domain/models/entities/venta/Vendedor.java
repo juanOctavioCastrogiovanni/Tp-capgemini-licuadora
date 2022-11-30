@@ -36,7 +36,7 @@ public class Vendedor extends Persona {
     }
 */
     //RELACION MUCHOS A MUCHOS lista de tipos de pagos aceptados
-    
+
     @ManyToMany
     @JoinTable(
             name = "vendedores_tipos_de_pagos",

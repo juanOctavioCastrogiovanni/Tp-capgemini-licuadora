@@ -5,6 +5,8 @@ import domain.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/productos")
 public class ProductoController {
@@ -24,6 +26,7 @@ public class ProductoController {
 
     @PostMapping({"", "/"})
     public Producto agregarProducto(@RequestBody Producto producto){
+        producto.setFechaCreacion(LocalDateTime.now());
         productoRepository.save(producto);
         return producto;
     }
