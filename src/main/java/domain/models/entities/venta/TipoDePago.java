@@ -1,5 +1,6 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import domain.models.Persistence;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class TipoDePago extends Persistence {
     private String tipo;
 
     //RELACION MUCHOS A MUCHOS Vendedores
+    @JsonBackReference
     @ManyToMany(mappedBy = "tiposDePagos")
     private List<Vendedor> vendedores;
 

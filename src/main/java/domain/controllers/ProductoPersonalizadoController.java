@@ -6,6 +6,9 @@ import domain.repositories.ProductoPersonalizadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/productos-personalizados")
 public class ProductoPersonalizadoController {
@@ -19,7 +22,7 @@ public class ProductoPersonalizadoController {
     }
 
     @GetMapping("/{id}")
-    public Object productoPersonalizado(@PathVariable(name = "id") Integer id){
+    public ProductoPersonalizado productoPersonalizado(@PathVariable(name = "id") Integer id){
         return prodPers.findById(id).get();
     }
 
@@ -30,7 +33,7 @@ public class ProductoPersonalizadoController {
     }
 
     @PutMapping("/{id}")
-    public Object modificarProductoPersonalizado(@PathVariable(name = "id") Integer id, @RequestBody ProductoPersonalizado producto){
+    public ProductoPersonalizado modificarProductoPersonalizado(@PathVariable(name = "id") Integer id, @RequestBody ProductoPersonalizado producto){
         producto.setId(id);
         prodPers.save(producto);
         return producto;

@@ -1,5 +1,6 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import domain.models.Persona;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,8 @@ public class Vendedor extends Persona {
     }
 */
     //RELACION MUCHOS A MUCHOS lista de tipos de pagos aceptados
+
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(
             name = "vendedores_tipos_de_pagos",
