@@ -39,18 +39,11 @@ public class Publicacion extends Persistence {
     private ProductoPersonalizado productoPersonalizado;
 
     /* RELACION Lista de carritos (ventas) */
-    @OneToMany(mappedBy = "publicacion")
-    private List<Carrito> carritos;
 
     public Publicacion() {
         super();
-        carritos = new ArrayList<>();
     }
 
-    public void agregarCarrito(Carrito carrito) {
-        carritos.add(carrito);
-        carrito.setPublicacion(this);
-    }
 
     public Publicacion(String nombre, String imagen, Integer stock, EstadoPublicacion estado, ProductoPersonalizado productoPersonalizado, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
@@ -59,7 +52,6 @@ public class Publicacion extends Persistence {
         this.stock = stock;
         this.estado = estado;
         this.productoPersonalizado = productoPersonalizado;
-        carritos = new ArrayList<>();
     }
 
 

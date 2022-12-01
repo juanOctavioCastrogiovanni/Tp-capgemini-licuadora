@@ -50,6 +50,11 @@ public class ProductoPersonalizado extends Persistence {
         personalizacion.setProductoPersonalizado(this);
     }
 
+    public void quitarPersonalizacion(Personalizacion personalizacion) {
+        personalizaciones.remove(personalizacion);
+        personalizacion.setProductoPersonalizado(null);
+    }
+
    public ProductoPersonalizado(Producto producto, Vendedor vendedor, Float precio, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.producto = producto;

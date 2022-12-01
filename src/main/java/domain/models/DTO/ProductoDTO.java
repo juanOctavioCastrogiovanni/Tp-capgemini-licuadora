@@ -1,18 +1,30 @@
 package domain.models.DTO;
 
-public class ProductoDTO {
-    @javax.validation.constraints.NotNull
-    private String nombre;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
-    @javax.validation.constraints.NotNull
+public class ProductoDTO {
+    @NotNull
+    @NotBlank
+    private String nombre;
+    @NotNull
+    @NotBlank
     private String color;
-    @javax.validation.constraints.NotNull
+    @NotNull
+    @Positive
+
     private Float precio;
-    @javax.validation.constraints.NotNull
+    @NotNull
+    @Positive
+
     private Integer tiempoDeFabricacion;
-    @javax.validation.constraints.NotNull
+
+    @NotNull
+    @Positive
     private Integer categoriaId;
-    @javax.validation.constraints.NotNull
+    @NotNull
+    @Positive
     private Integer gestorId;
 
     public String getNombre() {

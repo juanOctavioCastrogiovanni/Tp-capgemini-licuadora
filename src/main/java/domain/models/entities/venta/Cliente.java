@@ -1,5 +1,6 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import domain.models.Persona;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,28 +20,26 @@ public class Cliente extends Persona{
     private String password;
 
     /*RELACION una direccion*/
-    @OneToOne(mappedBy = "cliente")
-    private Direccion direccion;
 
     /*RELACION Lista de ventas asociadas*/
+    @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
-    private List<Venta> ventas;
+    private List<Carrito> carritos;
 
     public Cliente() {
         super();
-        ventas = new ArrayList<>();
+        carritos = new ArrayList<>();
     }
 
-    public void agregarVenta(Venta venta) {
-        ventas.add(venta);
+    public void agregarVenta(Carrito venta) {
+        carritos.add(venta);
         venta.setCliente(this);
     }
 
-    public Cliente(String nombre, String apellido, String dni, String email, String password, Direccion direccion, LocalDateTime fechaCreacion) {
+    public Cliente(String nombre, String apellido, String dni, String email, String password, LocalDateTime fechaCreacion) {
         super(nombre, apellido, dni, email, fechaCreacion);
         this.password = password;
-        this.direccion = direccion;
-        ventas = new ArrayList<>();
+        carritos = new ArrayList<>();
     }
 
 

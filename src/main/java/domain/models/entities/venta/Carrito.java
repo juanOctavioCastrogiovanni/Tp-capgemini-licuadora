@@ -1,43 +1,72 @@
 package domain.models.entities.venta;
 
-import domain.models.Persistence;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import domain.models.Persistence;
 
 
 @Entity
-@Table(name = "carrito")
+@Table(name = "carritos")
 @Setter
 @Getter
 public class Carrito extends Persistence {
 
-    /*RELACION una Publicacion*/
-    @ManyToOne
-    @JoinColumn(name = "publicacion_id", referencedColumnName = "id")
-    private Publicacion publicacion;
+    @Column(name = "fecha_de_venta", columnDefinition = "DATE")
+    private LocalDate fecha;
 
-    /*RELACION una venta*/
-    @ManyToOne
+    @Column(name = "hora_de_venta", columnDefinition = "TIME")
+    private LocalTime hora;
+
+    @Column(name = "precioTotal")
+    private Float precioTotal;
+
+    @Column(name = "estado")
+    private String estado;
+
+    /*RELACION un Tipo de pago*/
+
+    @OneToOne
     @JoinColumn(name = "venta_id", referencedColumnName = "id")
-    private Venta venta;
+    private TipoDePago pago;
 
-    @Column(name = "cantidad")
-    private Integer cantidad;
+    /*RELACION un cliente*/
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    private Cliente cliente;
 
-    @Column(name = "sub_total")
-    private Float subTotal;
+    /*RELACION Lista de carritos (publicaciones)*/
+    @JsonManagedReference
+    @OneToMany(mappedBy = "carrito")
+    private List<ItemCarrito> itemCarritos;
 
     public Carrito() {
         super();
+        itemCarritos = new ArrayList<>();
     }
 
-    public Carrito(Publicacion publicacion, Venta venta, Integer cantidad, Float subTotal, LocalDateTime fechaCreacion) {
-        super(fechaCreacion);
-        this.publicacion = publicacion;
-        this.venta = venta;
-        this.cantidad = cantidad;
-        this.subTotal = subTotal;
+    public void agregarItemCarrito(ItemCarrito itemCarrito) {
+        itemCarritos.add(itemCarrito);
+        itemCarrito.setCarrito(this);
     }
+
+    public Carrito(LocalDate fecha, LocalTime hora, Float precioTotal, String estado, TipoDePago tipoDePago, Cliente cliente, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.fecha = fecha;
+        this.hora = hora;
+        this.precioTotal = precioTotal;
+        this.estado = estado;
+        this.pago = tipoDePago;
+        this.cliente = cliente;
+        itemCarritos = new ArrayList<>();
+    }
+
 }

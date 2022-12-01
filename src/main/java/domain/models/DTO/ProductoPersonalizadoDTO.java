@@ -1,9 +1,12 @@
 package domain.models.DTO;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class ProductoPersonalizadoDTO {
-    @javax.validation.constraints.NotNull
+    @NotNull
     private Integer productoId;
-    @javax.validation.constraints.NotNull
+    @NotNull
     private Integer vendedorId;
 
     public Integer getProductoId() {

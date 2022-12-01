@@ -1,9 +1,11 @@
 package domain.models.DTO;
 
+import javax.validation.constraints.NotNull;
+
 public class PosiblePersonalizacionDTO {
-    @javax.validation.constraints.NotNull
+    @NotNull
     private Integer areaId;
-    @javax.validation.constraints.NotNull
+    @NotNull
     private Integer tipoId;
 
     public Integer getAreaId() {

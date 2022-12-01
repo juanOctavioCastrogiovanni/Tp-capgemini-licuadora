@@ -1,11 +1,19 @@
 package domain.models.DTO;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class PersonalizacionDTO {
-    @javax.validation.constraints.NotNull
+    @NotNull
     private Integer posiblePersonalizacionId;
-    @javax.validation.constraints.NotNull
+
+    @NotNull
+    @NotBlank
     private String contenido;
-    @javax.validation.constraints.NotNull
+
+    @NotNull
+    @Positive
     private Float precioPersonalizacion;
 
     public Integer getPosiblePersonalizacionId() {

@@ -16,10 +16,10 @@ public class Direccion extends Persistence {
     private String calle;
 
     @Column(name = "altura")
-    private Integer altura;
+    private String altura;
 
     @Column(name = "piso")
-    private Integer piso;
+    private String piso;
 
     @Column(name = "depto")
     private String depto;
@@ -28,7 +28,7 @@ public class Direccion extends Persistence {
     private String localidad;
 
     @Column(name = "provincia")
-    private Integer provincia;
+    private String provincia;
 
     /*RELACION un cliente*/
     @OneToOne
@@ -39,7 +39,7 @@ public class Direccion extends Persistence {
         super();
     }
 
-    public Direccion(String calle, Integer altura, Integer piso, String depto, String localidad, Integer provincia, Cliente cliente, LocalDateTime fechaCreacion) {
+    public Direccion(String calle, String altura, String piso, String depto, String localidad, String provincia, Cliente cliente, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.calle = calle;
         this.altura = altura;

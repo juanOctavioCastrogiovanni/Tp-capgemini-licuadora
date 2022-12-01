@@ -137,5 +137,90 @@ public class ProductoPersonalizadoController {
             return ResponseEntity.badRequest().body("Personalizacion , verifique los campos de envio");
     }
 
-    
+    /*
+    @Transactional
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> modificar(@PathVariable Integer id,
+                                            @RequestBody @Valid ProductoPersonalizadoDTO productoPersonalizadoEntrante,
+                                            BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+            try {
+                if (!prodPers.existsById(id)) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                ProductoPersonalizado producto = prodPers.findById(id).get();
+
+                if (!prod.existsById(productoPersonalizadoEntrante.getProductoId())) {
+                    return ResponseEntity.badRequest().body("El producto que intenta agregar no existe");
+                }
+
+                if (!vendedorRepository.existsById(productoPersonalizadoEntrante.getVendedorId())) {
+                    return ResponseEntity.badRequest().body("El vendedor que intenta agregar no existe");
+                }
+                Vendedor vendedor = vendedorRepository.findById(productoPersonalizadoEntrante.getVendedorId()).get();
+                Producto productoAAgregar = prod.findById(productoPersonalizadoEntrante.getProductoId()).get();
+
+                Float precioAnterior = producto.getPrecio();
+                producto.setProducto(productoAAgregar);
+                producto.setVendedor(vendedor);
+                producto.setFechaModificacion(LocalDateTime.now());
+                producto.setPrecio(producto.getPrecio() - precioAnterior + productoAAgregar.getPrecioBase());
+
+                producto.getPersonalizaciones().forEach(personalizacion -> {
+                    System.out.println(personalizacion.getContenido()+ " " + personalizacion.getPrecioXPersonalizacion());
+                });
+
+                return ResponseEntity.ok().body("Producto modificado");
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Error al modificar el producto");
+            }
+        } else {
+            return ResponseEntity.badRequest().body("Problemas con los campos de producto personalizado, verifique" +
+                    "y vuelva a mandarlos");
+        }
+    }
+*/
+
+    @Transactional
+    @PatchMapping("/{id}/personalizar/{idPersonalizacion}")
+    public ResponseEntity<String> modificarPersonalizacion(@PathVariable(name="id") Integer id,
+                                                           @PathVariable(name="idPersonalizacion") Integer idPersonalizacion,
+                                                           @RequestBody @Valid PersonalizacionDTO personalizacionEntrante,
+                                                           BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()){
+            if (prodPers.existsById(id)&&repoPersonalizacion.existsById(idPersonalizacion)){
+                try {
+                    ProductoPersonalizado productoPersonalizado = prodPers.findById(id).get();
+                    Personalizacion personalizacion = repoPersonalizacion.findById(idPersonalizacion).get();
+
+                    //Verifico que la personalizacion que se quiere modificar pertenezca al producto personalizado
+                    if(!productoPersonalizado.getPersonalizaciones().contains(personalizacion)){
+                        return ResponseEntity.badRequest().body("La personalizacion no pertenece al producto personalizado");
+                    }
+                    //Modifico el precio total del producto personalizado
+                    productoPersonalizado.setPrecio(productoPersonalizado.getPrecio() - personalizacion.getPrecioXPersonalizacion() + personalizacionEntrante.getPrecioPersonalizacion());
+
+                    //Modifico la personalizacion
+                    personalizacion.setContenido(personalizacionEntrante.getContenido());
+                    personalizacion.setPrecioXPersonalizacion(personalizacionEntrante.getPrecioPersonalizacion());
+                    personalizacion.setFechaModificacion(LocalDateTime.now());
+                    productoPersonalizado.setFechaModificacion(LocalDateTime.now());
+
+
+                    return ResponseEntity.ok().body("Personalizacion modificada");
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Error al modificar la personalizacion");
+                }
+            } else {
+                return ResponseEntity.badRequest().body("El producto personalizado o la personalizacion no existen");
+            }
+        }
+
+        return ResponseEntity.badRequest().body("Personalizacion , verifique los campos de envio");
+    }
+
+
+
+
 }
