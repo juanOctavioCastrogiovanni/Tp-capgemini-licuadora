@@ -21,6 +21,12 @@ public class Publicacion extends Persistence {
     @Column(name = "nombre")
     private String nombre;
 
+    @Column(name = "categoria")
+    private String categoria;
+
+    @Column(name = "vendedor")
+    private String vendedor;
+
     @Column(name = "imagen")
     private String imagen;
 
@@ -45,9 +51,11 @@ public class Publicacion extends Persistence {
     }
 
 
-    public Publicacion(String nombre, String imagen, Integer stock, EstadoPublicacion estado, ProductoPersonalizado productoPersonalizado, LocalDateTime fechaCreacion) {
+    public Publicacion(String nombre, String categoria, String vendedor, String imagen, Integer stock, EstadoPublicacion estado, ProductoPersonalizado productoPersonalizado, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.nombre = nombre;
+        this.categoria = categoria;
+        this.vendedor = vendedor;
         this.imagen = imagen;
         this.stock = stock;
         this.estado = estado;
