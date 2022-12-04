@@ -19,7 +19,7 @@ public class Personalizacion extends Persistence {
 
     //RELACION lista de posibles personalizaciones
     @ManyToOne
-    @JoinColumn(name = "posible_personalizacion_id", referencedColumnName = "id")
+    @JoinColumn(name = "posible_personalizacion_id", referencedColumnName = "id", nullable = false)
     private PosiblePersonalizacion posiblePersonalizacion;
 
     //atributo contenido

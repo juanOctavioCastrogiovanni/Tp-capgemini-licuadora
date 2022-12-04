@@ -69,8 +69,8 @@ public class TpCapgeminiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TpCapgeminiApplication.class, args);
 	}
-
 /*
+
 		@Bean
 		public CommandLineRunner init() {
 
@@ -99,15 +99,14 @@ public class TpCapgeminiApplication {
 
 				//Tipos
 				TipoDePersonalizacion imagen = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("Imagen", LocalDateTime.now()));
-				TipoDePersonalizacion dibujo = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("dibujo", LocalDateTime.now()));
-				TipoDePersonalizacion estampa = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("estampa", LocalDateTime.now()));
-				TipoDePersonalizacion texto = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("text0", LocalDateTime.now()));
+				TipoDePersonalizacion dibujo = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("Dibujo", LocalDateTime.now()));
+				TipoDePersonalizacion estampa = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("Estampa", LocalDateTime.now()));
+				TipoDePersonalizacion texto = (TipoDePersonalizacion) repoTipo.save(new TipoDePersonalizacion("Texto", LocalDateTime.now()));
 
 
 				// carga del producto
 				Producto remeraNegra = repoProducto.save(new Producto("Remera", "Negra", 1000F, 10, superior , gestor1, LocalDateTime.now()));
 				Producto remeraBlanca = repoProducto.save(new Producto("Remera", "Blanco", 1000F, 10, superior , gestor1, LocalDateTime.now()));
-				Producto remeraAzul = repoProducto.save(new Producto("Remera", "Azul", 1000F, 10, superior , gestor1, LocalDateTime.now()));
 				Producto remeraGris = repoProducto.save(new Producto("Remera", "Gris", 1000F, 10, superior , gestor1, LocalDateTime.now()));
 				Producto remeraBlancayAzul = repoProducto.save(new Producto("Remera", "Blanca y Azul", 1000F, 10, superior , gestor1, LocalDateTime.now()));
 				Producto shortAzul = repoProducto.save(new Producto("Short", "Azul", 800F, 6, inferior , gestor1, LocalDateTime.now()));
@@ -123,7 +122,6 @@ public class TpCapgeminiApplication {
 
 				//Cargando posibles personalizaciones
 				PosiblePersonalizacion pechoImagen = repoPosible.save(new PosiblePersonalizacion(pecho, imagen, LocalDateTime.now()));
-				PosiblePersonalizacion pechoDibujo = repoPosible.save(new PosiblePersonalizacion(pecho, dibujo, LocalDateTime.now()));
 				PosiblePersonalizacion pechoEstampa = repoPosible.save(new PosiblePersonalizacion(pecho, estampa, LocalDateTime.now()));
 				PosiblePersonalizacion frenteDibujo = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
 				PosiblePersonalizacion delanteDibujo = repoPosible.save(new PosiblePersonalizacion(delante, dibujo, LocalDateTime.now()));
@@ -138,13 +136,13 @@ public class TpCapgeminiApplication {
 				// agregando posibles personalizaciones al producto
 				remeraBlanca.agregarPosiblesPersonalizaciones(pechoImagen);
 				remeraBlanca.agregarPosiblesPersonalizaciones(delanteTexto);
-				remeraAzul.agregarPosiblesPersonalizaciones(delanteEstampa);
 				remeraNegra.agregarPosiblesPersonalizaciones(pechoImagen);
 				remeraGris.agregarPosiblesPersonalizaciones(frenteDibujo);
 				remeraBlancayAzul.agregarPosiblesPersonalizaciones(frenteDibujo);
 				shortAzul.agregarPosiblesPersonalizaciones(frenteDibujo);
 				shortRojo.agregarPosiblesPersonalizaciones(frenteEstampa);
 				shortGris.agregarPosiblesPersonalizaciones(piernaEstampa);
+				shortGris.agregarPosiblesPersonalizaciones(costadosEstampa);
 				jogginGris.agregarPosiblesPersonalizaciones(piernaEstampa);
 				pijama1.agregarPosiblesPersonalizaciones(delanteDibujo);
 				pijama2.agregarPosiblesPersonalizaciones(delanteDibujo);
@@ -158,7 +156,6 @@ public class TpCapgeminiApplication {
 				repoProducto.save(remeraGris);
 				repoProducto.save(remeraBlancayAzul);
 				repoProducto.save(shortAzul);
-				repoProducto.save(remeraAzul);
 				repoProducto.save(shortRojo);
 				repoProducto.save(shortGris);
 				repoProducto.save(jogginGris);
@@ -338,7 +335,7 @@ public class TpCapgeminiApplication {
 
 		};
 
-*/
 
+*/
 }
 

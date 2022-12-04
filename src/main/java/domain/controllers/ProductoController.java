@@ -186,7 +186,7 @@ public class ProductoController {
     //Creo una posible personalizacion para un producto
     @Transactional
     @PostMapping("/{id}/posiblePersonalizacion")
-    public ResponseEntity<String> agregarPosiblePersonalizacion(@PathVariable Integer id, @RequestBody
+    public ResponseEntity<String> agregarPosiblePersonalizacion(@PathVariable(name="id") Integer id, @RequestBody
     PosiblePersonalizacionDTO posiblePersonalizacionDTO) {
         try {
             Producto productoEncontrado = productoRepository.findById(id).get();

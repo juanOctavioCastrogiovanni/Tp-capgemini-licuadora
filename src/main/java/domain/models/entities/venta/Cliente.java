@@ -20,11 +20,18 @@ public class Cliente extends Persona{
     private String password;
 
     /*RELACION una direccion*/
+    @JsonManagedReference
+    @OneToOne(mappedBy = "cliente")
+    private Direccion direccion;
 
     /*RELACION Lista de ventas asociadas*/
     @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
     private List<Carrito> carritos;
+
+    public List<Carrito> obtenerClientes(){
+        return new ArrayList<>(carritos);
+    }
 
     public Cliente() {
         super();

@@ -16,14 +16,18 @@ public class ItemCarrito extends Persistence {
 
     /*RELACION una Publicacion*/
     @ManyToOne
-    @JoinColumn(name = "publicacion_id", referencedColumnName = "id")
+    @JoinColumn(name = "publicacion_id", referencedColumnName = "id", nullable = false)
     private Publicacion publicacion;
 
     /*RELACION un carrito*/
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "carrito_id", referencedColumnName = "id")
+    @JoinColumn(name = "carrito_id", referencedColumnName = "id", nullable = false)
     private Carrito carrito;
+
+
+    @Column(name = "precio_unitario")
+    private Float precioUnitario;
 
     @Column(name = "cantidad")
     private Integer cantidad;
@@ -35,11 +39,11 @@ public class ItemCarrito extends Persistence {
         super();
     }
 
-    public ItemCarrito(Publicacion publicacion, Carrito carrito, Integer cantidad, Float subTotal, LocalDateTime fechaCreacion) {
+    public ItemCarrito(Publicacion publicacion, Integer cantidad, Float precioUnitario,Float subTotal, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.publicacion = publicacion;
-        this.carrito = carrito;
         this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
         this.subTotal = subTotal;
     }
 }

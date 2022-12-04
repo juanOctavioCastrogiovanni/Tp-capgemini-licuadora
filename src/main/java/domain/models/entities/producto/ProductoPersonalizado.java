@@ -24,12 +24,12 @@ public class ProductoPersonalizado extends Persistence {
 
     /*RELACION un producto*/
     @ManyToOne
-    @JoinColumn(name = "producto_base_id", referencedColumnName = "id")
+    @JoinColumn(name = "producto_base_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
     /*RELACION un vendedor*/
     @ManyToOne
-    @JoinColumn(name = "vendedor_id", referencedColumnName = "id")
+    @JoinColumn(name = "vendedor_id", referencedColumnName = "id", nullable = false)
     private Vendedor vendedor;
 
     //RELACION lista de personalizaciones

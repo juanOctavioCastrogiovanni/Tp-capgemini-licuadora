@@ -32,7 +32,7 @@ public class Producto extends Persistence {
 
     //no utilizo cascada, no necesito crear o modificar categorias, solo asigarlas
     @ManyToOne
-    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id", nullable = false)
     private Categoria categoria;
 
     //Relacion lista de posibles personalizaciones
@@ -47,7 +47,7 @@ public class Producto extends Persistence {
 
     //RELACION a un gestor
     @ManyToOne
-    @JoinColumn(name = "gestor_id", referencedColumnName = "id")
+    @JoinColumn(name = "gestor_id", referencedColumnName = "id", nullable = false)
     private Gestor gestor;
 
 

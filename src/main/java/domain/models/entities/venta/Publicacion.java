@@ -41,7 +41,7 @@ public class Publicacion extends Persistence {
 
     /*RELACION un producto personalizado - anulo bidireccionalidad*/
     @OneToOne
-    @JoinColumn(name = "producto_personalizado_id", referencedColumnName = "id")
+    @JoinColumn(name = "producto_personalizado_id", referencedColumnName = "id", nullable = false)
     private ProductoPersonalizado productoPersonalizado;
 
     /* RELACION Lista de carritos (ventas) */

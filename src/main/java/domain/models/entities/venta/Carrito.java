@@ -1,7 +1,9 @@
 package domain.models.entities.venta;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import domain.models.entities.producto.Categoria;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -19,33 +21,30 @@ import domain.models.Persistence;
 @Getter
 public class Carrito extends Persistence {
 
-    @Column(name = "fecha_de_venta", columnDefinition = "DATE")
-    private LocalDate fecha;
-
-    @Column(name = "hora_de_venta", columnDefinition = "TIME")
-    private LocalTime hora;
-
     @Column(name = "precioTotal")
     private Float precioTotal;
 
-    @Column(name = "estado")
-    private String estado;
+
+    //RELACION a una direccion de envio
+    @ManyToOne
+    @JoinColumn(name = "direccion_id", referencedColumnName = "id", nullable = false)
+    private Direccion direccion;
 
     /*RELACION un Tipo de pago*/
 
     @OneToOne
-    @JoinColumn(name = "venta_id", referencedColumnName = "id")
+    @JoinColumn(name = "pago_id", referencedColumnName = "id", nullable = false)
     private TipoDePago pago;
 
     /*RELACION un cliente*/
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente cliente;
 
     /*RELACION Lista de carritos (publicaciones)*/
     @JsonManagedReference
-    @OneToMany(mappedBy = "carrito")
+    @OneToMany(mappedBy = "carrito", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<ItemCarrito> itemCarritos;
 
     public Carrito() {
@@ -58,14 +57,12 @@ public class Carrito extends Persistence {
         itemCarrito.setCarrito(this);
     }
 
-    public Carrito(LocalDate fecha, LocalTime hora, Float precioTotal, String estado, TipoDePago tipoDePago, Cliente cliente, LocalDateTime fechaCreacion) {
+    public Carrito(Float precioTotal, TipoDePago tipoDePago, Cliente cliente,  Direccion direccion, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
-        this.fecha = fecha;
-        this.hora = hora;
         this.precioTotal = precioTotal;
-        this.estado = estado;
         this.pago = tipoDePago;
         this.cliente = cliente;
+        this.direccion = direccion;
         itemCarritos = new ArrayList<>();
     }
 

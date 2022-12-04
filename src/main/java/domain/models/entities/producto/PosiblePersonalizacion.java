@@ -17,12 +17,12 @@ public class PosiblePersonalizacion extends Persistence {
 
     //Relacion con un area de personalizacion
     @ManyToOne
-    @JoinColumn(name = "area_de_personalizacion_id", referencedColumnName = "id")
+    @JoinColumn(name = "area_de_personalizacion_id", referencedColumnName = "id", nullable = false)
     private AreaDePersonalizacion area;
 
     //Relacion con un tipo de personalizacion
     @ManyToOne
-    @JoinColumn(name = "tipo_de_personalizacion_id", referencedColumnName = "id")
+    @JoinColumn(name = "tipo_de_personalizacion_id", referencedColumnName = "id", nullable = false)
     private TipoDePersonalizacion tipo;
 
     //Relacion con un producto base

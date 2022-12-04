@@ -1,5 +1,6 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import domain.models.Persistence;
@@ -31,8 +32,9 @@ public class Direccion extends Persistence {
     private String provincia;
 
     /*RELACION un cliente*/
+    @JsonBackReference
     @OneToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente cliente;
 
     public Direccion() {
