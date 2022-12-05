@@ -56,21 +56,50 @@ public class ProductoController {
     @GetMapping("/{id}")
     public ResponseEntity<Producto> traerPorId(@PathVariable Integer id) {
         try {
-            Producto producto = productoRepository.findById(id).get();
+            Producto producto = entityManager.createQuery(
+                            "SELECT p FROM Producto p WHERE p.fechaBaja IS NULL AND p.id = " + id, Producto.class)
+                    .getResultList().get(0);
             return new ResponseEntity<>(producto, HttpStatus.valueOf(producto == null ? 404 : 200));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    //Borro un producto, colocando la fecha de baja
+    //Borro un producto, colocando la fecha de baja, tambien a sus posibles personalizaciones
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+
+            Producto producto = productoRepository.findById(id).get();
+            List<ProductoPersonalizado> elemento = entityManager.createQuery(
+                            "SELECT p FROM ProductoPersonalizado p where p.fechaBaja IS NULL AND p.producto.id = " + id, ProductoPersonalizado.class)
+                    .getResultList();
+
+            if (elemento.size() > 0) {
+                return new ResponseEntity<>("No se puede eliminar el producto porque tiene personalizaciones", HttpStatus.BAD_REQUEST);
+            }
+
+            producto.setFechaBaja(LocalDateTime.now());
+            for (PosiblePersonalizacion p : producto.obtenerPosiblesPersonalizaciones()) {
+                p.setFechaBaja(LocalDateTime.now());
+            }
+            return ResponseEntity.ok().body("Producto eliminado");
+
+    }
+
+    //Borro una personalizacion de un producto
+    @Transactional
+    @DeleteMapping("/{id}/posible-personalizacion/{idPersonalizacion}")
+    public ResponseEntity<String> eliminarPersonalizacion(@PathVariable Integer id, @PathVariable Integer idPersonalizacion) {
         try {
             Producto producto = productoRepository.findById(id).get();
-            producto.setFechaBaja(LocalDateTime.now());
-            return ResponseEntity.ok().body("Producto eliminado");
+            PosiblePersonalizacion posiblePersonalizacion = personalizacionPosibleRepository.findById(idPersonalizacion).get();
+            if(producto.obtenerPosiblesPersonalizaciones().contains(posiblePersonalizacion)){
+                posiblePersonalizacion.setFechaBaja(LocalDateTime.now());
+            } else {
+                return new ResponseEntity<>("La posible personalizacion no pertenece al producto", HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.ok().body("Personalizacion eliminada");
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -81,6 +110,12 @@ public class ProductoController {
     public ResponseEntity<String> crearProducto(@RequestBody @Valid ProductoDTO producto, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             try {
+                if (!categoriaRepository.existsById(producto.getCategoriaId())){
+                    return new ResponseEntity<>("La categoria no existe", HttpStatus.BAD_REQUEST);
+                }
+                if (!gestorRepository.existsById(producto.getGestorId())){
+                    return new ResponseEntity<>("El gestor no existe", HttpStatus.BAD_REQUEST);
+                }
                 Categoria categoria = categoriaRepository.findById(producto.getCategoriaId()).get();
                 Gestor gestor = gestorRepository.findById(producto.getGestorId()).get();
                 Producto productoNuevo = new Producto(producto.getNombre(), producto.getColor(), producto.getPrecio(),
@@ -88,8 +123,7 @@ public class ProductoController {
                 productoRepository.save(productoNuevo);
                 return ResponseEntity.created(null).body("Producto creado");
             } catch (Exception e) {
-                return ResponseEntity.badRequest().body("No se a encontrado la categoria o el gestor en la base " +
-                        "de datos");
+                return ResponseEntity.badRequest().body("Error al crear el producto");
             }
         } else {
             return ResponseEntity.badRequest().body("No se a enviado un producto valido");
@@ -141,7 +175,7 @@ public class ProductoController {
 
     //Puedo modificar una posible personalizacion del producto ya creada
     @Transactional
-    @PatchMapping("/{id}/posiblePersonalizacion/{idPosiblePersonalizacion}")
+    @PatchMapping("/{id}/posible-personalizacion/{idPosiblePersonalizacion}")
     public ResponseEntity<String> editarPosiblePersonalizacion(@PathVariable(name="id") Integer id,
                                                                @PathVariable(name="idPosiblePersonalizacion")
                                                                Integer idPosiblePersonalizacion,
@@ -185,7 +219,7 @@ public class ProductoController {
 
     //Creo una posible personalizacion para un producto
     @Transactional
-    @PostMapping("/{id}/posiblePersonalizacion")
+    @PostMapping("/{id}/posible-personalizacion")
     public ResponseEntity<String> agregarPosiblePersonalizacion(@PathVariable(name="id") Integer id, @RequestBody
     PosiblePersonalizacionDTO posiblePersonalizacionDTO) {
         try {

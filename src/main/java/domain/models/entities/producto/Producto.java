@@ -1,5 +1,6 @@
 package domain.models.entities.producto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import domain.models.Persistence;
 import domain.models.entities.venta.Gestor;
@@ -9,7 +10,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -50,8 +53,6 @@ public class Producto extends Persistence {
     @JoinColumn(name = "gestor_id", referencedColumnName = "id", nullable = false)
     private Gestor gestor;
 
-
-
     public Producto() {
         super();
         this.posiblesPersonalizaciones = new ArrayList<>();
@@ -61,6 +62,14 @@ public class Producto extends Persistence {
     public void agregarPosiblesPersonalizaciones(PosiblePersonalizacion posiblesPersonalizaciones) {
         this.posiblesPersonalizaciones.add(posiblesPersonalizaciones);
         posiblesPersonalizaciones.setProducto(this);
+    }
+
+    public List<PosiblePersonalizacion> getPosiblesPersonalizaciones(){
+        return new ArrayList<>(posiblesPersonalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
+    }
+
+    public List<PosiblePersonalizacion> obtenerPosiblesPersonalizaciones() {
+        return new ArrayList<>(posiblesPersonalizaciones);
     }
 
     public Producto(String nombre, String color, Float precioBase, Integer tiempoDeFabricacion, Categoria categoria, Gestor gestor, LocalDateTime fechaCreacion) {

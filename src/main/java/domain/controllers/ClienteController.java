@@ -1,6 +1,7 @@
 package domain.controllers;
 
 import domain.models.entities.venta.Carrito;
+import domain.models.entities.venta.Venta;
 import domain.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ClienteController {
     private ClienteRepository repoCliente;
 
     @GetMapping("/{id}/carritos")
-    public List<Carrito> getCarritos(@PathVariable(name = "id") Integer id) {
+    public List<Venta> getCarritos(@PathVariable(name = "id") Integer id) {
         return repoCliente.findById(id).get().obtenerClientes();
     }
 

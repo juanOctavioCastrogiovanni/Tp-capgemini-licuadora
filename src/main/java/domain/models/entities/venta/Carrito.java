@@ -25,27 +25,13 @@ public class Carrito extends Persistence {
     private Float precioTotal;
 
 
-    //RELACION a una direccion de envio
-    @ManyToOne
-    @JoinColumn(name = "direccion_id", referencedColumnName = "id", nullable = false)
-    private Direccion direccion;
-
-    /*RELACION un Tipo de pago*/
-
-    @OneToOne
-    @JoinColumn(name = "pago_id", referencedColumnName = "id", nullable = false)
-    private TipoDePago pago;
-
-    /*RELACION un cliente*/
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
-    private Cliente cliente;
-
     /*RELACION Lista de carritos (publicaciones)*/
     @JsonManagedReference
     @OneToMany(mappedBy = "carrito", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<ItemCarrito> itemCarritos;
+
+    @OneToOne(mappedBy = "carrito")
+    private Venta venta;
 
     public Carrito() {
         super();
@@ -57,12 +43,9 @@ public class Carrito extends Persistence {
         itemCarrito.setCarrito(this);
     }
 
-    public Carrito(Float precioTotal, TipoDePago tipoDePago, Cliente cliente,  Direccion direccion, LocalDateTime fechaCreacion) {
+    public Carrito(Float precioTotal, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.precioTotal = precioTotal;
-        this.pago = tipoDePago;
-        this.cliente = cliente;
-        this.direccion = direccion;
         itemCarritos = new ArrayList<>();
     }
 

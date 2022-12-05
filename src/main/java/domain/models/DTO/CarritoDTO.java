@@ -1,5 +1,7 @@
 package domain.models.DTO;
 
+import domain.models.entities.venta.ItemCarrito;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -27,7 +29,6 @@ public class CarritoDTO {
     private String piso;
     private String provincia;
     private List<ItemDTO> items;
-
 
     public Integer getTipoDePagoId() {
         return tipoDePagoId;

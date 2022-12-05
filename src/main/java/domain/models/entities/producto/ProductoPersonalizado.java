@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -28,6 +29,7 @@ public class ProductoPersonalizado extends Persistence {
     private Producto producto;
 
     /*RELACION un vendedor*/
+
     @ManyToOne
     @JoinColumn(name = "vendedor_id", referencedColumnName = "id", nullable = false)
     private Vendedor vendedor;
@@ -48,6 +50,14 @@ public class ProductoPersonalizado extends Persistence {
     public void agregarPersonalizacion(Personalizacion personalizacion) {
         personalizaciones.add(personalizacion);
         personalizacion.setProductoPersonalizado(this);
+    }
+
+    public List<Personalizacion> getPersonalizaciones() {
+        return new ArrayList<>(personalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
+    }
+
+    public List<Personalizacion> obtenerPersonalizaciones(){
+        return new ArrayList<>(personalizaciones);
     }
 
     public void quitarPersonalizacion(Personalizacion personalizacion) {

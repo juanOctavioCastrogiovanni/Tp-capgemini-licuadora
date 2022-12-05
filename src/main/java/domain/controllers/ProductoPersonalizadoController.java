@@ -70,6 +70,9 @@ public class ProductoPersonalizadoController {
         try {
             ProductoPersonalizado producto = prodPers.findById(id).get();
             producto.setFechaBaja(LocalDateTime.now());
+            for (Personalizacion personalizacion : producto.obtenerPersonalizaciones()) {
+                personalizacion.setFechaBaja(LocalDateTime.now());
+            }
             return ResponseEntity.ok().body("Producto eliminado");
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -137,7 +140,7 @@ public class ProductoPersonalizadoController {
             return ResponseEntity.badRequest().body("Personalizacion , verifique los campos de envio");
     }
 
-    /*
+
     @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<String> modificar(@PathVariable Integer id,
@@ -180,7 +183,7 @@ public class ProductoPersonalizadoController {
                     "y vuelva a mandarlos");
         }
     }
-*/
+
 
     @Transactional
     @PatchMapping("/{id}/personalizar/{idPersonalizacion}")

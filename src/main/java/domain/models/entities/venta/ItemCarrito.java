@@ -22,7 +22,7 @@ public class ItemCarrito extends Persistence {
     /*RELACION un carrito*/
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "carrito_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "carrito_id", referencedColumnName = "id")
     private Carrito carrito;
 
 

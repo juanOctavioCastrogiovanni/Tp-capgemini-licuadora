@@ -27,26 +27,26 @@ public class Cliente extends Persona{
     /*RELACION Lista de ventas asociadas*/
     @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
-    private List<Carrito> carritos;
+    private List<Venta> ventas;
 
-    public List<Carrito> obtenerClientes(){
-        return new ArrayList<>(carritos);
+    public List<Venta> obtenerClientes(){
+        return new ArrayList<>(ventas);
     }
 
     public Cliente() {
         super();
-        carritos = new ArrayList<>();
+        ventas = new ArrayList<>();
     }
 
-    public void agregarVenta(Carrito venta) {
-        carritos.add(venta);
+    public void agregarVenta(Venta venta) {
+        ventas.add(venta);
         venta.setCliente(this);
     }
 
     public Cliente(String nombre, String apellido, String dni, String email, String password, LocalDateTime fechaCreacion) {
         super(nombre, apellido, dni, email, fechaCreacion);
         this.password = password;
-        carritos = new ArrayList<>();
+        ventas = new ArrayList<>();
     }
 
 

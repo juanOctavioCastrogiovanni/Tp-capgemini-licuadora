@@ -37,6 +37,9 @@ public class CarritoController {
     @Autowired
     private ClienteRepository repoCliente;
 
+    @Autowired
+    private VentaRepository repoVenta;
+
     @GetMapping({"/", ""})
     public List<Carrito> getAll() {
         return repoCarrito.findAll();
@@ -49,6 +52,7 @@ public class CarritoController {
         try {
                 if (!bindingResult.hasErrors()) {
                     Cliente cliente;
+                        System.out.println(carritoEntrante.getClienteId());
 
                     if (carritoEntrante.getNombre() != null && carritoEntrante.getApellido() != null && carritoEntrante.getMail() != null && carritoEntrante.getClienteId() == null){
                         cliente = repoCliente.save(new Cliente(carritoEntrante.getNombre(), carritoEntrante.getApellido(), null , carritoEntrante.getMail() , null, LocalDateTime.now()));
@@ -84,7 +88,7 @@ public class CarritoController {
 
                     }
 
-                    Carrito carrito = new Carrito(carritoEntrante.getPrecioTotal(), pago, cliente, direccion, LocalDateTime.now());
+                    Carrito carrito = new Carrito(carritoEntrante.getPrecioTotal(), LocalDateTime.now());
 
                     carritoEntrante.getItems().forEach(item -> {
                         if (!repoPublicacion.existsById(item.getPublicacionId())) {
@@ -97,6 +101,7 @@ public class CarritoController {
                         repoCarrito.save(carrito);
                     });
 
+                    repoVenta.save(new Venta(carrito, direccion, pago, cliente, LocalDateTime.now()));
 
 
 
