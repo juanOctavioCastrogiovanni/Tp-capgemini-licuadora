@@ -71,6 +71,9 @@ public class ProductoController {
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
 
             Producto producto = productoRepository.findById(id).get();
+
+            /*
+
             List<ProductoPersonalizado> elemento = entityManager.createQuery(
                             "SELECT p FROM ProductoPersonalizado p where p.fechaBaja IS NULL AND p.producto.id = " + id, ProductoPersonalizado.class)
                     .getResultList();
@@ -78,6 +81,8 @@ public class ProductoController {
             if (elemento.size() > 0) {
                 return new ResponseEntity<>("No se puede eliminar el producto porque tiene personalizaciones", HttpStatus.BAD_REQUEST);
             }
+
+             */
 
             producto.setFechaBaja(LocalDateTime.now());
             for (PosiblePersonalizacion p : producto.obtenerPosiblesPersonalizaciones()) {

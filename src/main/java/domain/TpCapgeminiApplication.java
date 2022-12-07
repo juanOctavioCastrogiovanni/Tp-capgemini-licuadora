@@ -82,7 +82,7 @@ public class TpCapgeminiApplication {
 				// cargas de las distintas categorias
 				Categoria superior = repoCategoria.save(new Categoria("Prenda superior", LocalDateTime.now()));
 				Categoria inferior = repoCategoria.save(new Categoria("Prenda inferior", LocalDateTime.now()));
-				Categoria Pijamas = repoCategoria.save(new Categoria("Pijamas", LocalDateTime.now()));
+				Categoria pijamas = repoCategoria.save(new Categoria("Pijamas", LocalDateTime.now()));
 				Categoria accesorios = repoCategoria.save(new Categoria("Accesorios", LocalDateTime.now()));
 
 
@@ -113,20 +113,26 @@ public class TpCapgeminiApplication {
 				Producto shortRojo = repoProducto.save(new Producto("Short", "Rojo", 800F, 6, inferior , gestor1, LocalDateTime.now()));
 				Producto shortGris = repoProducto.save(new Producto("Short", "Gris", 800F, 6, inferior , gestor1, LocalDateTime.now()));
 				Producto jogginGris = repoProducto.save(new Producto("Joggin", "Gris", 2000F, 15, inferior , gestor1, LocalDateTime.now()));
-				Producto pijama1 = repoProducto.save(new Producto("Pijama", "Blanco y azul", 1500F, 20, inferior , gestor1, LocalDateTime.now()));
-				Producto pijama2 = repoProducto.save(new Producto("Pijama", "Blanco y rojo", 1500F, 20, inferior , gestor1, LocalDateTime.now()));
-				Producto pijama3 = repoProducto.save(new Producto("Pijama", "Blanco y negro", 1500F, 20, inferior , gestor1, LocalDateTime.now()));
-				Producto pijama4 = repoProducto.save(new Producto("Pijama", "Blanco y negro", 1500F, 20, inferior , gestor1, LocalDateTime.now()));
+				Producto pijama1 = repoProducto.save(new Producto("Pijama", "Blanco y azul", 1500F, 20, pijamas , gestor1, LocalDateTime.now()));
+				Producto pijama2 = repoProducto.save(new Producto("Pijama", "Blanco y rojo", 1500F, 20, pijamas , gestor1, LocalDateTime.now()));
+				Producto pijama3 = repoProducto.save(new Producto("Pijama", "Blanco y negro", 1500F, 20, pijamas , gestor1, LocalDateTime.now()));
+				Producto pijama4 = repoProducto.save(new Producto("Pijama", "Blanco y negro", 1500F, 20, pijamas , gestor1, LocalDateTime.now()));
 				Producto launchera1 = repoProducto.save(new Producto("Launchera", "Gris", 4500F, 20, accesorios , gestor1, LocalDateTime.now()));
 
 
 				//Cargando posibles personalizaciones
-				PosiblePersonalizacion pechoImagen = repoPosible.save(new PosiblePersonalizacion(pecho, imagen, LocalDateTime.now()));
+				PosiblePersonalizacion pechoImagen1 = repoPosible.save(new PosiblePersonalizacion(pecho, imagen, LocalDateTime.now()));
+				PosiblePersonalizacion pechoImagen2 = repoPosible.save(new PosiblePersonalizacion(pecho, imagen, LocalDateTime.now()));
 				PosiblePersonalizacion pechoEstampa = repoPosible.save(new PosiblePersonalizacion(pecho, estampa, LocalDateTime.now()));
-				PosiblePersonalizacion frenteDibujo = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
-				PosiblePersonalizacion delanteDibujo = repoPosible.save(new PosiblePersonalizacion(delante, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion frenteDibujo1 = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion frenteDibujo2 = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion frenteDibujo3 = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion frenteDibujo4 = repoPosible.save(new PosiblePersonalizacion(frente, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion delanteDibujo1 = repoPosible.save(new PosiblePersonalizacion(delante, dibujo, LocalDateTime.now()));
+				PosiblePersonalizacion delanteDibujo2 = repoPosible.save(new PosiblePersonalizacion(delante, dibujo, LocalDateTime.now()));
 				PosiblePersonalizacion frenteEstampa = repoPosible.save(new PosiblePersonalizacion(frente, estampa, LocalDateTime.now()));
-				PosiblePersonalizacion piernaEstampa = repoPosible.save(new PosiblePersonalizacion(pierna, estampa, LocalDateTime.now()));
+				PosiblePersonalizacion piernaEstampa1 = repoPosible.save(new PosiblePersonalizacion(pierna, estampa, LocalDateTime.now()));
+				PosiblePersonalizacion piernaEstampa2 = repoPosible.save(new PosiblePersonalizacion(pierna, estampa, LocalDateTime.now()));
 				PosiblePersonalizacion costadosEstampa = repoPosible.save(new PosiblePersonalizacion(costados, estampa, LocalDateTime.now()));
 				PosiblePersonalizacion todoEstampa = repoPosible.save(new PosiblePersonalizacion(completo, estampa, LocalDateTime.now()));
 				PosiblePersonalizacion delanteEstampa = repoPosible.save(new PosiblePersonalizacion(delante, estampa, LocalDateTime.now()));
@@ -134,19 +140,19 @@ public class TpCapgeminiApplication {
 
 
 				// agregando posibles personalizaciones al producto
-				remeraBlanca.agregarPosiblesPersonalizaciones(pechoImagen);
+				remeraBlanca.agregarPosiblesPersonalizaciones(pechoImagen1);
 				remeraBlanca.agregarPosiblesPersonalizaciones(delanteTexto);
-				remeraNegra.agregarPosiblesPersonalizaciones(pechoImagen);
-				remeraGris.agregarPosiblesPersonalizaciones(frenteDibujo);
-				remeraBlancayAzul.agregarPosiblesPersonalizaciones(frenteDibujo);
-				shortAzul.agregarPosiblesPersonalizaciones(frenteDibujo);
+				remeraNegra.agregarPosiblesPersonalizaciones(pechoImagen2);
+				remeraGris.agregarPosiblesPersonalizaciones(frenteDibujo1);
+				remeraBlancayAzul.agregarPosiblesPersonalizaciones(frenteDibujo2);
+				shortAzul.agregarPosiblesPersonalizaciones(frenteDibujo3);
 				shortRojo.agregarPosiblesPersonalizaciones(frenteEstampa);
-				shortGris.agregarPosiblesPersonalizaciones(piernaEstampa);
+				shortGris.agregarPosiblesPersonalizaciones(piernaEstampa1);
 				shortGris.agregarPosiblesPersonalizaciones(costadosEstampa);
-				jogginGris.agregarPosiblesPersonalizaciones(piernaEstampa);
-				pijama1.agregarPosiblesPersonalizaciones(delanteDibujo);
-				pijama2.agregarPosiblesPersonalizaciones(delanteDibujo);
-				pijama3.agregarPosiblesPersonalizaciones(frenteDibujo);
+				jogginGris.agregarPosiblesPersonalizaciones(piernaEstampa2);
+				pijama1.agregarPosiblesPersonalizaciones(delanteDibujo1);
+				pijama2.agregarPosiblesPersonalizaciones(delanteDibujo2);
+				pijama3.agregarPosiblesPersonalizaciones(frenteDibujo4);
 				pijama4.agregarPosiblesPersonalizaciones(pechoEstampa);
 				launchera1.agregarPosiblesPersonalizaciones(todoEstampa);
 				launchera1.agregarPosiblesPersonalizaciones(delanteEstampa);
@@ -207,20 +213,20 @@ public class TpCapgeminiApplication {
 
 
 				//Cargar personalizaciones
-				Personalizacion pers1 = repoPersonalizacion.save(new Personalizacion(pechoImagen, "Capitan America", 500F, LocalDateTime.now()));
-				Personalizacion pers2 = repoPersonalizacion.save(new Personalizacion(pechoImagen, "Advanger", 700F, LocalDateTime.now()));
-				Personalizacion pers3 = repoPersonalizacion.save(new Personalizacion(frenteDibujo, "Spiderman", 600F, LocalDateTime.now()));
-				Personalizacion pers4 = repoPersonalizacion.save(new Personalizacion(delanteDibujo, "Advanger", 900F, LocalDateTime.now()));
-				Personalizacion pers5 = repoPersonalizacion.save(new Personalizacion(delanteDibujo, "Spiderman", 800F, LocalDateTime.now()));
-				Personalizacion pers6 = repoPersonalizacion.save(new Personalizacion(frenteDibujo, "Capitan America", 700F, LocalDateTime.now()));
-				Personalizacion pers7 = repoPersonalizacion.save(new Personalizacion(frenteDibujo, "Advanger", 600F, LocalDateTime.now()));
+				Personalizacion pers1 = repoPersonalizacion.save(new Personalizacion(pechoImagen1, "Capitan America", 500F, LocalDateTime.now()));
+				Personalizacion pers2 = repoPersonalizacion.save(new Personalizacion(pechoImagen2, "Advanger", 700F, LocalDateTime.now()));
+				Personalizacion pers3 = repoPersonalizacion.save(new Personalizacion(frenteDibujo1, "Spiderman", 600F, LocalDateTime.now()));
+				Personalizacion pers4 = repoPersonalizacion.save(new Personalizacion(delanteDibujo1, "Advanger", 900F, LocalDateTime.now()));
+				Personalizacion pers5 = repoPersonalizacion.save(new Personalizacion(delanteDibujo2, "Spiderman", 800F, LocalDateTime.now()));
+				Personalizacion pers6 = repoPersonalizacion.save(new Personalizacion(frenteDibujo1, "Capitan America", 700F, LocalDateTime.now()));
+				Personalizacion pers7 = repoPersonalizacion.save(new Personalizacion(frenteDibujo2, "Advanger", 600F, LocalDateTime.now()));
 				Personalizacion pers8 = repoPersonalizacion.save(new Personalizacion(frenteEstampa, "Advanger", 800F, LocalDateTime.now()));
-				Personalizacion pers9 = repoPersonalizacion.save(new Personalizacion(piernaEstampa, "Marvel", 500F, LocalDateTime.now()));
-				Personalizacion pers10 = repoPersonalizacion.save(new Personalizacion(piernaEstampa, "Capitan America", 500F, LocalDateTime.now()));
+				Personalizacion pers9 = repoPersonalizacion.save(new Personalizacion(piernaEstampa1, "Marvel", 500F, LocalDateTime.now()));
+				Personalizacion pers10 = repoPersonalizacion.save(new Personalizacion(piernaEstampa2, "Capitan America", 500F, LocalDateTime.now()));
 				Personalizacion pers11 = repoPersonalizacion.save(new Personalizacion(costadosEstampa, "Marvel", 500F, LocalDateTime.now()));
-				Personalizacion pers12 = repoPersonalizacion.save(new Personalizacion(delanteDibujo, "Spiderman", 900F, LocalDateTime.now()));
-				Personalizacion pers13 = repoPersonalizacion.save(new Personalizacion(delanteDibujo, "Spiderman", 800F, LocalDateTime.now()));
-				Personalizacion pers14 = repoPersonalizacion.save(new Personalizacion(frenteDibujo, "Spiderman", 700F, LocalDateTime.now()));
+				Personalizacion pers12 = repoPersonalizacion.save(new Personalizacion(delanteDibujo1, "Spiderman", 900F, LocalDateTime.now()));
+				Personalizacion pers13 = repoPersonalizacion.save(new Personalizacion(delanteDibujo2, "Spiderman", 800F, LocalDateTime.now()));
+				Personalizacion pers14 = repoPersonalizacion.save(new Personalizacion(frenteDibujo3, "Spiderman", 700F, LocalDateTime.now()));
 				Personalizacion pers15 = repoPersonalizacion.save(new Personalizacion(pechoEstampa, "Marvel", 500F, LocalDateTime.now()));
 				Personalizacion pers16 = repoPersonalizacion.save(new Personalizacion(todoEstampa, "Stitch", 500F, LocalDateTime.now()));
 				Personalizacion pers17 = repoPersonalizacion.save(new Personalizacion(delanteEstampa, "Mini", 400F, LocalDateTime.now()));

@@ -56,7 +56,9 @@ public class ProductoPersonalizadoController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductoPersonalizado> traerPorId(@PathVariable Integer id) {
         try {
-            ProductoPersonalizado producto = prodPers.findById(id).get();
+            ProductoPersonalizado producto = entityManager.createQuery(
+                            "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL AND p.id = " + id, ProductoPersonalizado.class)
+                    .getResultList().get(0);
             return new ResponseEntity<>(producto, HttpStatus.valueOf(producto == null ? 404 : 200));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -74,6 +76,24 @@ public class ProductoPersonalizadoController {
                 personalizacion.setFechaBaja(LocalDateTime.now());
             }
             return ResponseEntity.ok().body("Producto eliminado");
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Transactional
+    @DeleteMapping("{id}/personalizar/{idPersonalizacion}")
+    public ResponseEntity<String> eliminarPersonalizacion(@PathVariable Integer id, @PathVariable Integer idPersonalizacion) {
+        try {
+            ProductoPersonalizado producto = prodPers.findById(id).get();
+            Personalizacion personalizacion = repoPersonalizacion.findById(idPersonalizacion).get();
+            if (producto.obtenerPersonalizaciones().contains(personalizacion)) {
+                personalizacion.setFechaBaja(LocalDateTime.now());
+                producto.setPrecio(producto.getPrecio() - personalizacion.getPrecioXPersonalizacion());
+                return ResponseEntity.ok().body("Personalizacion eliminada");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -100,7 +120,7 @@ public class ProductoPersonalizadoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al crear el producto");
         }
-    }
+    } 
 
     @Transactional
     @PostMapping("/{id}/personalizar")
