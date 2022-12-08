@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -24,7 +25,6 @@ public class ItemCarrito extends Persistence {
     @ManyToOne
     @JoinColumn(name = "carrito_id", referencedColumnName = "id")
     private Carrito carrito;
-
 
     @Column(name = "precio_unitario")
     private Float precioUnitario;
@@ -45,5 +45,9 @@ public class ItemCarrito extends Persistence {
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.subTotal = subTotal;
+    }
+
+    public void calcularSubTotal(){
+        this.subTotal = this.precioUnitario * this.cantidad;
     }
 }

@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/carrito")
@@ -40,11 +41,118 @@ public class CarritoController {
     @Autowired
     private VentaRepository repoVenta;
 
-    @GetMapping({"/", ""})
-    public List<Carrito> getAll() {
-        return repoCarrito.findAll();
+
+    @PostMapping({"/", ""})
+    public @ResponseBody Integer crearCarrito() {
+        try {
+            Carrito carrito = new Carrito(LocalDateTime.now());
+            repoCarrito.save(carrito);
+            return carrito.getId();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    @Transactional
+    @PostMapping("/{carritoId}/publicacion/{publicacionId}")
+    public ResponseEntity<String> agregar(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
+        try {
+            if (!repoCarrito.existsById(carritoId) || !repoPublicacion.existsById(publicacionId)) {
+                return ResponseEntity.badRequest().body("No existe el carrito o la publicacion");
+            }
+
+            Publicacion publicacionAAgregar = repoPublicacion.findById(publicacionId).get();
+            Carrito carritoActual = repoCarrito.findById(carritoId).get();
+
+            if (publicacionAAgregar.getStock() == 0) {
+                return ResponseEntity.badRequest().body("No hay stock");
+            }
+
+            if (carritoActual.getItems().size()>0 && !carritoActual.getItems().get(0).getPublicacion().getVendedor().equals(publicacionAAgregar.getVendedor())) {
+                return ResponseEntity.badRequest().body("No se puede agregar un producto de otro vendedor");
+            }
+
+
+
+            //Si no esta la publicacion agregala al carrito
+            if (!carritoActual.getItems().stream().anyMatch(item -> item.getPublicacion().getId().equals(publicacionId))) {
+                ItemCarrito itemAAgregar = new ItemCarrito(publicacionAAgregar, 1, publicacionAAgregar.getProductoPersonalizado().getPrecio(), 0F, LocalDateTime.now());
+                itemAAgregar.calcularSubTotal();
+                carritoActual.agregarItemCarrito(itemAAgregar);
+                repoItemCarrito.save(itemAAgregar);
+                System.out.println("Se agrego el item al carrito");
+            } else {
+                //Si esta la publicacion, aumenta la cantidad
+                ItemCarrito itemAAumentar = carritoActual.getItems().stream().filter(item -> item.getPublicacion().getId() == publicacionId).findFirst().get();
+                itemAAumentar.setCantidad(itemAAumentar.getCantidad() + 1);
+                itemAAumentar.calcularSubTotal();
+                System.out.println("Se aumento la cantidad del item");
+            }
+
+            carritoActual.calcularTotalCarrito();
+
+
+            return ResponseEntity.ok("Se agrego correctamente");
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al agregar publicacion al carrito");
+        }
+    }
+
+    @Transactional
+    @DeleteMapping("/{carritoId}/publicacion/{publicacionId}")
+    public ResponseEntity<String> remover(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
+        try {
+            if (!repoCarrito.existsById(carritoId) || !repoPublicacion.existsById(publicacionId)) {
+                return ResponseEntity.badRequest().body("No existe el carrito o la publicacion");
+            }
+
+            Publicacion publicacionARemover = repoPublicacion.findById(publicacionId).get();
+            Carrito carritoActual = repoCarrito.findById(carritoId).get();
+
+            if (!carritoActual.getItems().stream().anyMatch(item -> item.getPublicacion().getId().equals(publicacionId))) {
+                return ResponseEntity.badRequest().body("No se puede remover un producto que no esta en el carrito");
+            }
+
+            ItemCarrito itemARemover = carritoActual.getItems().stream().filter(item -> item.getPublicacion().getId() == publicacionId).findFirst().get();
+            if (itemARemover.getCantidad() > 1) {
+                itemARemover.setCantidad(itemARemover.getCantidad() - 1);
+                itemARemover.calcularSubTotal();
+                System.out.println("Se disminuyo la cantidad del item");
+            } else {
+                carritoActual.removerItemCarrito(itemARemover);
+                repoItemCarrito.delete(itemARemover);
+                System.out.println("Se removio el item del carrito");
+            }
+
+            carritoActual.calcularTotalCarrito();
+
+            return ResponseEntity.ok("Se removio correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al remover publicacion del carrito");
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     @Transactional
     @PostMapping({"/", ""})
     public ResponseEntity<String> createCarrito(@RequestBody @Valid CarritoDTO carritoEntrante,
@@ -113,4 +221,8 @@ public class CarritoController {
                 return ResponseEntity.badRequest().body("Error al crear el carrito");
             }
     }
+
+     */
+
+
 }

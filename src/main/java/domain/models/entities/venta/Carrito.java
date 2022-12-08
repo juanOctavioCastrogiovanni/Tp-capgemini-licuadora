@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import domain.models.Persistence;
 
 
@@ -28,25 +30,41 @@ public class Carrito extends Persistence {
     /*RELACION Lista de carritos (publicaciones)*/
     @JsonManagedReference
     @OneToMany(mappedBy = "carrito", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private List<ItemCarrito> itemCarritos;
+    private List<ItemCarrito> items;
 
     @OneToOne(mappedBy = "carrito")
     private Venta venta;
 
     public Carrito() {
         super();
-        itemCarritos = new ArrayList<>();
+        this.items = new ArrayList<>();
+        this.precioTotal = 0f;
     }
 
     public void agregarItemCarrito(ItemCarrito itemCarrito) {
-        itemCarritos.add(itemCarrito);
+        items.add(itemCarrito);
         itemCarrito.setCarrito(this);
     }
 
-    public Carrito(Float precioTotal, LocalDateTime fechaCreacion) {
+    public Carrito(LocalDateTime fechaCreacion) {
         super(fechaCreacion);
-        this.precioTotal = precioTotal;
-        itemCarritos = new ArrayList<>();
+        items = new ArrayList<>();
+        this.precioTotal = 0f;
     }
+
+    public void calcularTotalCarrito(){
+        Float total = 0F;
+        for (ItemCarrito item: items) {
+            total += item.getSubTotal();
+        }
+        this.precioTotal=total;
+    }
+
+ public void removerItemCarrito(ItemCarrito itemARemover){
+        items.remove(itemARemover);
+        itemARemover.setCarrito(null);
+ }
+
+
 
 }
