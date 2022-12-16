@@ -5,6 +5,7 @@ import domain.repositories.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -12,7 +13,7 @@ import java.util.List;
 public class CategoriaController {
     @Autowired
     private CategoriaRepository categoriaRepository;
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping({"", "/"})
     public List<Categoria> obtenerCategorias(){
         return categoriaRepository.findAll();
@@ -25,6 +26,7 @@ public class CategoriaController {
 
     @PostMapping({"", "/"})
     public Categoria agregarCategoria(@RequestBody Categoria categoria){
+        categoria.setFechaCreacion(LocalDateTime.now());
         categoriaRepository.save(categoria);
         return categoria;
     }

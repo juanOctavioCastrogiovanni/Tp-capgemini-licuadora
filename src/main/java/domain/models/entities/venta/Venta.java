@@ -1,56 +1,51 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import domain.models.Persistence;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ventas")
 @Setter
 @Getter
-public class Venta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class Venta extends Persistence {
 
+    //RELACION a una direccion de envio
 
-    @Column(name = "fecha_de_venta", columnDefinition = "DATE")
-    private LocalDate fecha;
-
-    @Column(name = "hora_de_venta", columnDefinition = "TIME")
-    private LocalTime hora;
-
-    @Column(name = "precioTotal")
-    private Float precioTotal;
-
-    @Column(name = "estado")
-    private String estado;
+    @ManyToOne
+    @JoinColumn(name = "direccion_id", referencedColumnName = "id", nullable = false)
+    private Direccion direccion;
 
     /*RELACION un Tipo de pago*/
-    @OneToOne(mappedBy = "venta")
-    private TipoDePago tipoDePago;
+
+    @OneToOne
+    @JoinColumn(name = "pago_id", referencedColumnName = "id", nullable = false)
+    private TipoDePago pago;
 
     /*RELACION un cliente*/
+    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente cliente;
 
-    /*RELACION Lista de carritos (publicaciones)*/
-    @OneToMany(mappedBy = "venta")
-    private List<Carrito> carritos;
+    @OneToOne
+    @JoinColumn(name = "carrito_id", referencedColumnName = "id", nullable = false)
+    private Carrito carrito;
 
     public Venta() {
-        carritos = new ArrayList<>();
+        super();
     }
 
-    public void agregarCarrito(Carrito carrito) {
-        carritos.add(carrito);
-        carrito.setVenta(this);
+    public Venta(Carrito carrito, Direccion direccion, TipoDePago pago, Cliente cliente, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.direccion = direccion;
+        this.pago = pago;
+        this.cliente = cliente;
+        this.carrito = carrito;
     }
 
 }

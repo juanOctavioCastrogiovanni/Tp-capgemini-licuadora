@@ -1,21 +1,25 @@
 package domain.models.entities.producto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import domain.models.PersistenceId;
+import domain.models.Persistence;
 import domain.models.entities.venta.Gestor;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
 @Table(name = "productos")
 @Setter
 @Getter
-public class Producto extends PersistenceId {
+public class Producto extends Persistence {
 
     @Column(name = "nombre")
     private String nombre;
@@ -31,13 +35,13 @@ public class Producto extends PersistenceId {
 
     //no utilizo cascada, no necesito crear o modificar categorias, solo asigarlas
     @ManyToOne
-    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id", nullable = false)
     private Categoria categoria;
 
     //Relacion lista de posibles personalizaciones
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<PosiblePersonalizacion> posiblesPersonalizaciones;
 
     //RELACION lista de personalizaciones - anulo por unidireccionalidad
@@ -46,12 +50,11 @@ public class Producto extends PersistenceId {
 
     //RELACION a un gestor
     @ManyToOne
-    @JoinColumn(name = "gestor_id", referencedColumnName = "id")
+    @JoinColumn(name = "gestor_id", referencedColumnName = "id", nullable = false)
     private Gestor gestor;
 
-
-
     public Producto() {
+        super();
         this.posiblesPersonalizaciones = new ArrayList<>();
 
     }
@@ -61,8 +64,23 @@ public class Producto extends PersistenceId {
         posiblesPersonalizaciones.setProducto(this);
     }
 
-    public void agregarProductosPersonalizados(ProductoPersonalizado productosPersonalizados) {
-        productosPersonalizados.setProducto(this);
+    public List<PosiblePersonalizacion> getPosiblesPersonalizaciones(){
+        return new ArrayList<>(posiblesPersonalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
+    }
+
+    public List<PosiblePersonalizacion> obtenerPosiblesPersonalizaciones() {
+        return new ArrayList<>(posiblesPersonalizaciones);
+    }
+
+    public Producto(String nombre, String color, Float precioBase, Integer tiempoDeFabricacion, Categoria categoria, Gestor gestor, LocalDateTime fechaCreacion) {
+        super(fechaCreacion);
+        this.nombre = nombre;
+        this.color = color;
+        this.precioBase = precioBase;
+        this.tiempoDeFabricacion = tiempoDeFabricacion;
+        this.categoria = categoria;
+        this.gestor = gestor;
+        this.posiblesPersonalizaciones = new ArrayList<>();
     }
 
 }

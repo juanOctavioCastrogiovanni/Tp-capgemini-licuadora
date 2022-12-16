@@ -1,10 +1,11 @@
 package domain.models.entities.venta;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import domain.models.Persona;
-import domain.models.entities.producto.ProductoPersonalizado;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class Vendedor extends Persona {
         productoPer.setVendedor(this);
     }
 */
-    /*RELACION MUCHOS A MUCHOS lista de tipos de pagos aceptados
+    //RELACION MUCHOS A MUCHOS lista de tipos de pagos aceptados
+
     @ManyToMany
     @JoinTable(
             name = "vendedores_tipos_de_pagos",
@@ -42,5 +44,21 @@ public class Vendedor extends Persona {
             inverseJoinColumns = @JoinColumn(name = "tipo_de_pago_id")
     )
     private List<TipoDePago> tiposDePagos;
-    */
+
+    public void agregarTipoDePago(TipoDePago tipoDePago){
+        tiposDePagos.add(tipoDePago);
+    }
+
+
+    public Vendedor() {
+        super();
+        tiposDePagos = new ArrayList<>();
+    }
+
+    public Vendedor(String nombreTienda, String logo, String nombre, String apellido, String email, String dni, LocalDateTime fechaCreacion) {
+        super(nombre, apellido, dni, email, fechaCreacion);
+        this.nombreTienda = nombreTienda;
+        this.logo = logo;
+        tiposDePagos = new ArrayList<>();
+    }
 }
