@@ -2,6 +2,8 @@ package domain.controllers;
 
 import com.sun.xml.internal.ws.developer.StreamingAttachment;
 import domain.models.DTO.CarritoDTO;
+import domain.models.DTO.DireccionDTO;
+import domain.models.DTO.VentaDTO;
 import domain.models.entities.venta.*;
 import domain.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,18 @@ public class CarritoController {
     private VentaRepository repoVenta;
 
 
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/{id}")
+    public ResponseEntity<Carrito> obtenerCarrito(@PathVariable(name = "id") Integer id){
+        Optional<Carrito> carrito = repoCarrito.findById(id);
+        if(carrito.isPresent()){
+            return ResponseEntity.ok(carrito.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping({"/", ""})
     public @ResponseBody Integer crearCarrito() {
         try {
@@ -53,6 +67,7 @@ public class CarritoController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @Transactional
     @PostMapping("/{carritoId}/publicacion/{publicacionId}")
     public ResponseEntity<String> agregar(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
@@ -92,15 +107,37 @@ public class CarritoController {
             carritoActual.calcularTotalCarrito();
 
 
-            return ResponseEntity.ok("Se agrego correctamente");
+            return ResponseEntity.created(null).body("Se agrego el producto al carrito");
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al agregar publicacion al carrito");
         }
     }
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @Transactional
-    @DeleteMapping("/{carritoId}/publicacion/{publicacionId}")
+    @DeleteMapping("/{carritoId}/item/{itemId}")
+    public ResponseEntity<String> eliminarItem(@PathVariable Integer carritoId, @PathVariable Integer itemId) {
+        try {
+            if (!repoCarrito.existsById(carritoId) || !repoItemCarrito.existsById(itemId)) {
+                return ResponseEntity.badRequest().body("No existe el carrito o el item");
+            }
+
+            Carrito carritoActual = repoCarrito.findById(carritoId).get();
+            ItemCarrito itemABorrar = repoItemCarrito.findById(itemId).get();
+            carritoActual.removerItemCarrito(itemABorrar);
+            repoItemCarrito.delete(itemABorrar);
+            carritoActual.calcularTotalCarrito();
+            return ResponseEntity.ok("Se elimino el item del carrito");
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al eliminar item del carrito");
+        }
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @Transactional
+    @DeleteMapping("/{carritoId}/restar-publicacion/{publicacionId}")
     public ResponseEntity<String> remover(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
         try {
             if (!repoCarrito.existsById(carritoId) || !repoPublicacion.existsById(publicacionId)) {
@@ -134,21 +171,50 @@ public class CarritoController {
 
     }
 
+    @PostMapping("/{carritoId}/venta")
+    public ResponseEntity<String> ventaRealizada(
+            @PathVariable(name="carritoId") Integer carritoId,
+            @Valid @RequestBody VentaDTO venta,
+            BindingResult bindingResult
+    ) {
 
+      if (!bindingResult.hasErrors()) {
+          try {
+                   if (!repoCarrito.existsById(carritoId)) {
+                       return ResponseEntity.badRequest().body("No existe el carrito");
+                   }
+                   Carrito carrito = repoCarrito.findById(carritoId).get();
+                    if (carrito.getItems().size() == 0) {
+                         return ResponseEntity.badRequest().body("No hay items en el carrito");
+                    }
+                    if (!repoTipoDePago.existsById(venta.getPagoId())) {
+                        return ResponseEntity.badRequest().body("No existe el tipo de pago");
+                    }
+                    TipoDePago tipoDePago = repoTipoDePago.findById(venta.getPagoId()).get();
 
+                    if(!repoCliente.existsById(venta.getClienteId())) {
+                        return ResponseEntity.badRequest().body("No existe el cliente");
+                    }
 
+                    Cliente cliente = repoCliente.findById(venta.getClienteId()).get();
 
+                    if (!repoDireccion.existsById(venta.getDireccionId())) {
+                        return ResponseEntity.badRequest().body("No existe la direccion");
+                    }
 
+                    Direccion direccion = repoDireccion.findById(venta.getDireccionId()).get();
 
+                    repoVenta.save(new Venta(carrito, direccion, tipoDePago, cliente, LocalDateTime.now()));
 
+                    return ResponseEntity.created(null).body("Se realizo la venta correctamente");
 
-
-
-
-
-
-
-
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Error al realizar la venta");
+            }
+        } else {
+            return ResponseEntity.badRequest().body("Error envio de datos");
+        }
+     }
 
 
 

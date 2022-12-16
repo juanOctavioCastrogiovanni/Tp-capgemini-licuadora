@@ -13,7 +13,7 @@ import java.util.List;
 public class CategoriaController {
     @Autowired
     private CategoriaRepository categoriaRepository;
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping({"", "/"})
     public List<Categoria> obtenerCategorias(){
         return categoriaRepository.findAll();

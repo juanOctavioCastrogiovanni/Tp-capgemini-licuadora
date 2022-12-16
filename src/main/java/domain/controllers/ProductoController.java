@@ -46,10 +46,15 @@ public class ProductoController {
 
     //Traigo todos los productos que no esten borrados
     @GetMapping({"/", ""})
-    public List<Producto> traerTodos() {
-        return entityManager.createQuery(
+    public ResponseEntity<List<Producto>> traerTodos() {
+        List<Producto> productos = entityManager.createQuery(
                         "SELECT p FROM Producto p WHERE p.fechaBaja IS NULL", Producto.class)
                 .getResultList();
+        if (productos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok(productos);
     }
 
     //Traigo un producto en particular

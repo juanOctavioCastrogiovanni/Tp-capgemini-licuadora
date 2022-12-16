@@ -35,4 +35,11 @@ public class Persona extends Persistence {
         this.email = email;
     }
 
+    public Persona(String nombre, String apellido, String email, LocalDateTime fechaCreacion){
+        super(fechaCreacion);
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+    }
+
 }

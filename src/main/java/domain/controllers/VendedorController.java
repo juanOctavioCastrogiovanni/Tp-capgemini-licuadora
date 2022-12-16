@@ -17,6 +17,7 @@ public class VendedorController {
     @Autowired
     private VendedorRepository vendedorRepository;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping({"", "/"})
     public List<Vendedor> vendedores(){
         return vendedorRepository.findAll();

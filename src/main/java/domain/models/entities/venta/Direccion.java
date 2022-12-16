@@ -33,15 +33,14 @@ public class Direccion extends Persistence {
 
     /*RELACION un cliente*/
     @JsonBackReference
-    @OneToOne
-    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(mappedBy = "direccion")
     private Cliente cliente;
 
     public Direccion() {
         super();
     }
 
-    public Direccion(String calle, String altura, String piso, String depto, String localidad, String provincia, Cliente cliente, LocalDateTime fechaCreacion) {
+    public Direccion(String calle, String altura, String piso, String depto, String localidad, String provincia, LocalDateTime fechaCreacion) {
         super(fechaCreacion);
         this.calle = calle;
         this.altura = altura;
@@ -49,7 +48,6 @@ public class Direccion extends Persistence {
         this.depto = depto;
         this.localidad = localidad;
         this.provincia = provincia;
-        this.cliente = cliente;
     }
 
 

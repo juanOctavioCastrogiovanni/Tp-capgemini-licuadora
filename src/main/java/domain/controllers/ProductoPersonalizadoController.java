@@ -47,10 +47,14 @@ public class ProductoPersonalizadoController {
 
     //Traigo todos los productos personalizados que no esten borrados
     @GetMapping({"/", ""})
-    public List<ProductoPersonalizado> traerTodos() {
-        return entityManager.createQuery(
+    public ResponseEntity<List<ProductoPersonalizado>> traerTodos() {
+        List<ProductoPersonalizado> productos = entityManager.createQuery(
                         "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", ProductoPersonalizado.class)
                 .getResultList();
+        if (productos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

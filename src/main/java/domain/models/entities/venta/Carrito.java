@@ -32,9 +32,6 @@ public class Carrito extends Persistence {
     @OneToMany(mappedBy = "carrito", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<ItemCarrito> items;
 
-    @OneToOne(mappedBy = "carrito")
-    private Venta venta;
-
     public Carrito() {
         super();
         this.items = new ArrayList<>();

@@ -21,7 +21,8 @@ public class Cliente extends Persona{
 
     /*RELACION una direccion*/
     @JsonManagedReference
-    @OneToOne(mappedBy = "cliente")
+    @OneToOne
+    @JoinColumn(name = "direccion_id", referencedColumnName = "id", nullable = false)
     private Direccion direccion;
 
     /*RELACION Lista de ventas asociadas*/
@@ -43,11 +44,20 @@ public class Cliente extends Persona{
         venta.setCliente(this);
     }
 
-    public Cliente(String nombre, String apellido, String dni, String email, String password, LocalDateTime fechaCreacion) {
+    public Cliente(String nombre, String apellido, String dni, String email, String password, Direccion direccion, LocalDateTime fechaCreacion) {
         super(nombre, apellido, dni, email, fechaCreacion);
         this.password = password;
+        this.direccion = direccion;
         ventas = new ArrayList<>();
     }
 
+    public Cliente(String nombre, String apellido, String email, Direccion direccion, LocalDateTime fechaCreacion) {
+        super(nombre, apellido, email, fechaCreacion);
+        this.direccion = direccion;
+    }
 
+
+    public List<Venta> getCarritos() {
+        return new ArrayList<>(ventas);
+    }
 }

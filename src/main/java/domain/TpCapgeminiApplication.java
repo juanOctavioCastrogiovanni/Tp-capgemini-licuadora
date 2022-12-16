@@ -10,7 +10,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -69,8 +71,8 @@ public class TpCapgeminiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TpCapgeminiApplication.class, args);
 	}
-
 /*
+
 		@Bean
 		public CommandLineRunner init() {
 
@@ -292,12 +294,15 @@ public class TpCapgeminiApplication {
 				repoProductoPersonalizado.save(launcheraPersonalizacion3);
 
 
+				//Direccion
+				Direccion direccion1 = repoDireccion.save(new Direccion("Bonifacini", "2349", "1", "A","San martin", "Buenos Aires", LocalDateTime.now()));
+
+				 BCryptPasswordEncoder bCryptPasswordEncoder =  new BCryptPasswordEncoder(10, new SecureRandom());
+				 String hash = bCryptPasswordEncoder.encode("Camilo2020");
 
 				//Cargar Cliente
-				Cliente cliente1 = repoCliente.save(new Cliente("Marcelo", "Luna", "15693759","marceloluna@gmail.com", "Marcelo2432", LocalDateTime.now()));
+				Cliente cliente1 = repoCliente.save(new Cliente("Marcelo", "Luna", "15693759","marceloluna@gmail.com", hash, direccion1, LocalDateTime.now()));
 
-				//Direccion
-				Direccion direccion1 = repoDireccion.save(new Direccion("Bonifacini", "2349", "1", "A","San martin", "Buenos Aires", cliente1, LocalDateTime.now()));
 
 				//Cargar publicaciones
 				Publicacion publicacion1 = repoPublicacion.save(new Publicacion("Remera personalizada del capitan america para niños", "prenda-superior", "magic","https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/remera-avengers-807001-cfbe6c6800b772fd0a16678530419350-1024-1024.png",
@@ -341,7 +346,7 @@ public class TpCapgeminiApplication {
 
 		};
 
-
 */
+
 }
 

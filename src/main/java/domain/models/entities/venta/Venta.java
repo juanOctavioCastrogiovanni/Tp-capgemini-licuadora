@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class Venta extends Persistence {
 
     //RELACION a una direccion de envio
+
     @ManyToOne
     @JoinColumn(name = "direccion_id", referencedColumnName = "id", nullable = false)
     private Direccion direccion;
