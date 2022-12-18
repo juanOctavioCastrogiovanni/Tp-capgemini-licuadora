@@ -1,6 +1,7 @@
 package domain.controllers;
 
-import domain.models.DTO.InicioSeccionDTO;
+
+import domain.models.DTO.InicioSesionDTO;
 import domain.models.entities.venta.Carrito;
 import domain.models.entities.venta.Cliente;
 import domain.models.DTO.ClienteDTO;
@@ -45,29 +46,29 @@ public class ClienteController {
         repoCliente.save(clienteNuevo);
         return ResponseEntity.ok(clienteNuevo.getId());
     }
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}/direccion")
-    public ResponseEntity<Direccion> getDireccion(@PathVariable Integer id) {
+    public ResponseEntity<Direccion> obtenerDireccion(@PathVariable Integer id) {
         if(!repoCliente.existsById(id)){
             return ResponseEntity.notFound().build();
         }
-        Cliente cliente = repoCliente.getOne(id);
+        Cliente cliente = repoCliente.findById(id).get();
         return ResponseEntity.ok(cliente.getDireccion());
     }
-
-    @GetMapping("/{id}/perfil")
-    public ResponseEntity<Cliente> getCliente(@PathVariable Integer id) {
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/{id}")
+    public ResponseEntity<Cliente> obtenerCliente(@PathVariable Integer id) {
         if(!repoCliente.existsById(id)){
             return ResponseEntity.notFound().build();
         }
-        Cliente cliente = repoCliente.getOne(id);
+        Cliente cliente = repoCliente.findById(id).get();
         return ResponseEntity.ok(cliente);
     }
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/iniciar-sesion")
-    public ResponseEntity<Integer> iniciarSesion(@RequestBody InicioSeccionDTO clienteEntrante) {
+    public ResponseEntity<Cliente> iniciarSesion(@RequestBody InicioSesionDTO clienteEntrante) {
         if(!repoCliente.existsByEmail(clienteEntrante.getEmail())){
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, null, 404);
         }
 
         //Traigo el cliente de la base de datos.
@@ -79,7 +80,7 @@ public class ClienteController {
         if(!encoder.matches(clienteEntrante.getPassword(), cliente.getPassword())){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(cliente.getId());
+        return ResponseEntity.ok(cliente);
     }
 
 

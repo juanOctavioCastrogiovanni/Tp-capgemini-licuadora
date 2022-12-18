@@ -3,7 +3,7 @@ package domain.models.DTO;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-public class InicioSeccionDTO {
+public class InicioSesionDTO {
     @NotNull
     @Email
     private String email;
