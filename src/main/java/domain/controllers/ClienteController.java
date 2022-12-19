@@ -68,7 +68,7 @@ public class ClienteController {
     @PostMapping("/iniciar-sesion")
     public ResponseEntity<Cliente> iniciarSesion(@RequestBody InicioSesionDTO clienteEntrante) {
         if(!repoCliente.existsByEmail(clienteEntrante.getEmail())){
-            return new ResponseEntity<>(null, null, 404);
+            return ResponseEntity.badRequest().build();
         }
 
         //Traigo el cliente de la base de datos.
@@ -83,7 +83,7 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}/carritos")
     public List<Venta> getCarritos(@PathVariable(name = "id") Integer id) {
         Cliente cliente = repoCliente.findById(id).orElse(null);

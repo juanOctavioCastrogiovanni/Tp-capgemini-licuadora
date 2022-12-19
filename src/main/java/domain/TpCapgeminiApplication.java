@@ -72,7 +72,6 @@ public class TpCapgeminiApplication {
 		SpringApplication.run(TpCapgeminiApplication.class, args);
 	}
 /*
-
 		@Bean
 		public CommandLineRunner init() {
 
@@ -305,41 +304,39 @@ public class TpCapgeminiApplication {
 
 
 				//Cargar publicaciones
-				Publicacion publicacion1 = repoPublicacion.save(new Publicacion("Remera personalizada del capitan america para niños", "prenda-superior", "magic","https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/remera-avengers-807001-cfbe6c6800b772fd0a16678530419350-1024-1024.png",
+				Publicacion publicacion1 = repoPublicacion.save(new Publicacion("Remera Capitan America para niños", "prenda-superior", "magic","remera-1.png",
 						20, estadoPublicacion.ACTIVA, remeraBlancaPersonalizada, LocalDateTime.now()));
-				Publicacion publicacion2 = repoPublicacion.save(new Publicacion("Remera negra personalizada Advanger para niños", "prenda-superior", "dadoa","https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/remera-avengers-807031-41291466afce7d61af16678504474125-1024-1024.png",
+				Publicacion publicacion2 = repoPublicacion.save(new Publicacion("Remera Advanger para niños", "prenda-superior", "dadoa","remera-2.png",
 						50, estadoPublicacion.ACTIVA, remeraNegraPersonalizada1, LocalDateTime.now()));
-				Publicacion publicacion3 = repoPublicacion.save(new Publicacion("Remera personalizada de tu hombre araña favorito para niños",  "prenda-superior", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80643-n1-52115d310471fbc4ab16678498103741-1024-1024.jpg",
+				Publicacion publicacion3 = repoPublicacion.save(new Publicacion("Remera Spiderman para niños",  "prenda-superior", "magic", "remera-3.jpg",
 						30, estadoPublicacion.ACTIVA, remeraGrisPersonalizada1, LocalDateTime.now()));
-				Publicacion publicacion4 = repoPublicacion.save(new Publicacion("Remera personalizada de Advenger para niños",  "prenda-superior", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/807621-3b76ca0d301ae4197716611994636893-1024-1024.jpg",
+				Publicacion publicacion4 = repoPublicacion.save(new Publicacion("Remera Advenger para niños",  "prenda-superior", "dadoa", "remera-4.jpg",
 						40, estadoPublicacion.ACTIVA, remeraBlancaPersonalizada2, LocalDateTime.now()));
-				Publicacion publicacion5 = repoPublicacion.save(new Publicacion("Remera personalizada de Spiderman para niños", "prenda-superior", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/807621-3b76ca0d301ae4197716611994636893-1024-1024.jpg",
+				Publicacion publicacion5 = repoPublicacion.save(new Publicacion("Remera Advenger Marvel para niños", "prenda-superior", "magic", "remera-4.jpg",
 						30, estadoPublicacion.ACTIVA, remeraBlancaPersonalizada3, LocalDateTime.now()));
-				Publicacion publicacion6 = repoPublicacion.save(new Publicacion("Remera personalizada del Capitan America para niños",  "prenda-superior", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/807611-7b6b9d844934514e0c16645651725903-1024-1024.jpg",
+				Publicacion publicacion6 = repoPublicacion.save(new Publicacion("Remera Capitan America para niños",  "prenda-superior", "dadoa", "remera-5.jpg",
 						50, estadoPublicacion.ACTIVA, remeraBlancaYAzulPersonalizada1, LocalDateTime.now()));
-				Publicacion publicacion7 = repoPublicacion.save(new Publicacion("Short personalizado de Advanger para niños", "prenda-inferior", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/807791-baab629ecccea918be16680245486487-1024-1024.webp",
+				Publicacion publicacion7 = repoPublicacion.save(new Publicacion("Short Advanger para niños", "prenda-inferior", "magic", "short-1.webp",
 						30, estadoPublicacion.ACTIVA, shortAzulPersonalizacion1, LocalDateTime.now()));
-				Publicacion publicacion8 = repoPublicacion.save(new Publicacion("Short de Marvel para niños", "prenda-inferior", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80778-short-marvel-avengers1-9e3bdc716703d2213516648947702578-1024-1024.jpg",
+				Publicacion publicacion8 = repoPublicacion.save(new Publicacion("Short de Marvel para niños", "prenda-inferior", "magic", "short-2.jpg",
 						30, estadoPublicacion.ACTIVA, shortGrisPersonalizacion1, LocalDateTime.now()));
-				Publicacion publicacion9 = repoPublicacion.save(new Publicacion("Short personalizado de Marvel para niños", "prenda-inferior", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80778-short-marvel-avengers1-9e3bdc716703d2213516648947702578-1024-1024.jpg",
-						30, estadoPublicacion.ACTIVA, shortRojoPersonalizacion1, LocalDateTime.now()));
-				Publicacion publicacion10 = repoPublicacion.save(new Publicacion("Joggin personalizada del Capitan America para niños", "prenda-inferior", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80718-jogging-marvel1-844d42da83811c6e9116645491202048-1024-1024.jpg",
+				Publicacion publicacion10 = repoPublicacion.save(new Publicacion("Joggin Capitan America para niños", "prenda-inferior", "dadoa", "joggin.jpg",
 						10, estadoPublicacion.ACTIVA, shortJogginPersonalizacion1, LocalDateTime.now()));
-				Publicacion publicacion11 = repoPublicacion.save(new Publicacion("Short personalizado de Marvel para niños", "prenda-inferior", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80713-short-avengers-marvel-41-10712e6036751a671c16645482766226-1024-1024.jpg",
+				Publicacion publicacion11 = repoPublicacion.save(new Publicacion("Short Marvel para niños", "prenda-inferior", "magic", "short-3.jpg",
 						50, estadoPublicacion.ACTIVA, shortGrisPersonalizacion2, LocalDateTime.now()));
-				Publicacion publicacion12 = repoPublicacion.save(new Publicacion("Pijama personalizada de Spiderman para niños", "pijamas", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/pijama-spiderman-806991-9d927429bc795cc92116613548171724-1024-1024.jpg",
+				Publicacion publicacion12 = repoPublicacion.save(new Publicacion("Pijama Spiderman para niños", "pijamas", "dadoa", "pijama.jpg",
 						9, estadoPublicacion.ACTIVA, remeraYPantalonAzul, LocalDateTime.now()));
-				Publicacion publicacion13 = repoPublicacion.save(new Publicacion("Pijama de Spiderman para niños", "pijamas", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/80698-pijama-spiderman-marvel1-c6111a4f5ed29e881316648953097529-1024-1024.jpg",
+				Publicacion publicacion13 = repoPublicacion.save(new Publicacion("Pijama Spiderman para niños", "pijamas", "magic", "pijama-2.jpg",
 						29, estadoPublicacion.ACTIVA, remeraYPantalonRojo, LocalDateTime.now()));
-				Publicacion publicacion14 = repoPublicacion.save(new Publicacion("Pijama con figura de Spiderman para niños", "pijamas", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/806971-b56754e7b32fa8d1f216619753524814-1024-1024.jpg",
+				Publicacion publicacion14 = repoPublicacion.save(new Publicacion("Pijama Spiderman para niños", "pijamas", "dadoa", "pijama-3.jpg",
 						40, estadoPublicacion.ACTIVA, remeraYPantalonNegro1, LocalDateTime.now()));
-				Publicacion publicacion15 = repoPublicacion.save(new Publicacion("Pijama personalizada de Marvel para niños", "pijamas", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/807741-9533b3e4f37caa01b316612002482358-1024-1024.png",
+				Publicacion publicacion15 = repoPublicacion.save(new Publicacion("Pijama Marvel para niños", "pijamas", "magic", "pijama-4.png",
 						46, estadoPublicacion.ACTIVA, remeraYPantalonNegro2, LocalDateTime.now()));
-				Publicacion publicacion16 = repoPublicacion.save(new Publicacion("Launchera Stitch para niños", "accesorios", "dadoa", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/d_nq_np_2x_724699-mla49622239719_042022-f1-a34fd8d84e117518dd16697499818738-1024-1024.webp",
+				Publicacion publicacion16 = repoPublicacion.save(new Publicacion("Launchera Stitch para niños", "accesorios", "dadoa", "launchera.webp",
 						23, estadoPublicacion.ACTIVA, launcheraPersonalizacion1, LocalDateTime.now()));
-				Publicacion publicacion17 = repoPublicacion.save(new Publicacion("Launchera Mini para niños", "accesorios", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/d_nq_np_2x_775945-mla51471832256_092022-f1-daf3370151bc65671816697491265434-1024-1024.webp",
+				Publicacion publicacion17 = repoPublicacion.save(new Publicacion("Launchera Mini para niños", "accesorios", "magic", "launchera-2.webp",
 						23, estadoPublicacion.ACTIVA, launcheraPersonalizacion2, LocalDateTime.now()));
-				Publicacion publicacion19 = repoPublicacion.save(new Publicacion("Launchera Mickey para niños", "accesorios", "magic", "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/130/833/products/d_nq_np_2x_958145-mla51471629226_092022-f1-4791909ffb405fbc3716697484486436-1024-1024.webp",
+				Publicacion publicacion19 = repoPublicacion.save(new Publicacion("Launchera Mickey para niños", "accesorios", "magic", "launchera-3.webp",
 						23, estadoPublicacion.ACTIVA, launcheraPersonalizacion3, LocalDateTime.now()));
 
 			};
