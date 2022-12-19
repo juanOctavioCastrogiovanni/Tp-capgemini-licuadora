@@ -171,46 +171,63 @@ public class CarritoController {
 
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/{carritoId}/venta")
-    public ResponseEntity<String> ventaRealizada(
+    public  ResponseEntity<String> ventaRealizada(
             @PathVariable(name="carritoId") Integer carritoId,
             @Valid @RequestBody VentaDTO venta,
             BindingResult bindingResult
     ) {
 
       if (!bindingResult.hasErrors()) {
-          try {
-                   if (!repoCarrito.existsById(carritoId)) {
-                       return ResponseEntity.badRequest().body("No existe el carrito");
-                   }
-                   Carrito carrito = repoCarrito.findById(carritoId).get();
-                    if (carrito.getItems().size() == 0) {
-                         return ResponseEntity.badRequest().body("No hay items en el carrito");
-                    }
-                    if (!repoTipoDePago.existsById(venta.getPagoId())) {
-                        return ResponseEntity.badRequest().body("No existe el tipo de pago");
-                    }
-                    TipoDePago tipoDePago = repoTipoDePago.findById(venta.getPagoId()).get();
+          if (!repoCarrito.existsById(carritoId)) {
+              return ResponseEntity.badRequest().body("No existe el carrito");
+          }
+          Carrito carrito = repoCarrito.findById(carritoId).get();
+          if (carrito.getItems().size() == 0) {
+              return ResponseEntity.badRequest().body("No hay items en el carrito");
+          }
+          if (!repoTipoDePago.existsById(venta.getPagoId())) {
+              return ResponseEntity.badRequest().body("No existe el tipo de pago");
+          }
+          TipoDePago tipoDePago = repoTipoDePago.findById(venta.getPagoId()).get();
 
-                    if(!repoCliente.existsById(venta.getClienteId())) {
-                        return ResponseEntity.badRequest().body("No existe el cliente");
-                    }
 
-                    Cliente cliente = repoCliente.findById(venta.getClienteId()).get();
 
-                    if (!repoDireccion.existsById(venta.getDireccionId())) {
-                        return ResponseEntity.badRequest().body("No existe la direccion");
-                    }
 
-                    Direccion direccion = repoDireccion.findById(venta.getDireccionId()).get();
+          Direccion direccion;
 
-                    repoVenta.save(new Venta(carrito, direccion, tipoDePago, cliente, LocalDateTime.now()));
+          if(venta.getDireccionId()==null){
+              direccion = repoDireccion.save(new Direccion(venta.getCalle(), venta.getAltura(), venta.getPiso(), venta.getDepartamento(), venta.getLocalidad(), venta.getProvincia(), LocalDateTime.now()));
+          } else if(!repoDireccion.existsById(venta.getDireccionId())){
+                return ResponseEntity.badRequest().body("No existe la direccion");
+          } else {
+              direccion = repoDireccion.findById(venta.getDireccionId()).get();
+          }
 
-                    return ResponseEntity.created(null).body("Se realizo la venta correctamente");
 
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body("Error al realizar la venta");
-            }
+
+
+          Cliente cliente;
+
+          if(venta.getClienteId()==null){
+              cliente = repoCliente.save(new Cliente(venta.getNombreCliente(), venta.getApellidoCliente(), venta.getEmailCliente(), direccion, LocalDateTime.now()));
+          } else if (!repoCliente.existsById(venta.getClienteId())) {
+                return ResponseEntity.badRequest().body("No existe el cliente");
+          } else{
+              cliente = repoCliente.findById(venta.getClienteId()).get();
+          }
+
+          Venta laVenta = (repoVenta.save(new Venta(carrito, direccion, tipoDePago, cliente, LocalDateTime.now())));
+
+          carrito.getItems().forEach(item -> {
+              item.getPublicacion().setStock(item.getPublicacion().getStock() - item.getCantidad());
+              repoPublicacion.save(item.getPublicacion());
+          });
+
+          return ResponseEntity.created(null).body("Se realizo la venta correctamente " + laVenta.getId());
+
+
         } else {
             return ResponseEntity.badRequest().body("Error envio de datos");
         }

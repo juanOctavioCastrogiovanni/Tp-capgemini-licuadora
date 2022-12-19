@@ -5,10 +5,7 @@ import domain.models.entities.venta.Direccion;
 import domain.repositories.DireccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -24,5 +21,16 @@ public class DireccionController {
         repoDireccion.save(direccionNueva);
         return ResponseEntity.ok(direccionNueva.getId());
     }
+    @GetMapping({"/", ""})
+    public ResponseEntity<Iterable<Direccion>> obtenerDirecciones() {
+        return ResponseEntity.ok(repoDireccion.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Direccion> obtenerDireccion(@PathVariable(name = "id") Integer id) {
+        return ResponseEntity.ok(repoDireccion.findById(id).get());
+    }
+
+
 
 }
