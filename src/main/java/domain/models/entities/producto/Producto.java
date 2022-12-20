@@ -1,6 +1,7 @@
 package domain.models.entities.producto;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import domain.models.DTO.projection.DTOPosiblePersonalizacion;
 import domain.models.Persistence;
 import domain.models.entities.venta.Gestor;
 import lombok.Getter;

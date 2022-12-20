@@ -2,6 +2,7 @@ package domain.controllers;
 
 import domain.models.DTO.PosiblePersonalizacionDTO;
 import domain.models.DTO.ProductoDTO;
+import domain.models.DTO.projection.DTOProducto;
 import domain.models.entities.producto.*;
 import domain.models.entities.venta.Gestor;
 import domain.repositories.*;
@@ -47,15 +48,15 @@ public class ProductoController {
 
     //Traigo todos los productos que no esten borrados
     @GetMapping({"/", ""})
-    public ResponseEntity<List<DTOProducto>> traerTodos() {
+    public ResponseEntity<?> traerTodos() {
 
         TypedQuery<DTOProducto> dtoProductoIds = entityManager.createQuery(
-                        "SELECT new domain.models.entities.producto.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL", DTOProducto.class);
+                        "SELECT new domain.models.DTO.projection.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL", DTOProducto.class);
 
         List<DTOProducto> listaProductos = dtoProductoIds.getResultList();
 
         if (listaProductos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("No se encontro la lista de Productos",HttpStatus.NO_CONTENT);
         }
 
         return ResponseEntity.ok(listaProductos);
@@ -63,15 +64,14 @@ public class ProductoController {
 
     //Traigo un producto en particular
     @GetMapping("/{id}")
-    public ResponseEntity<DTOProducto> traerPorId(@PathVariable Integer id) {
+    public ResponseEntity<?> traerPorId(@PathVariable Integer id) {
         TypedQuery<DTOProducto> dtoProductoIds = entityManager.createQuery(
-                "SELECT new domain.models.entities.producto.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL", DTOProducto.class);
+                "SELECT new domain.models.DTO.projection.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL AND p.id = " + id, DTOProducto.class);
 
-        DTOProducto productoEncontrado = dtoProductoIds.getResultList().get(0);
-
-        if (productoEncontrado == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (dtoProductoIds.getResultList().isEmpty()) {
+            return new ResponseEntity<>("No encontrado el producto con el id " + id, HttpStatus.NOT_FOUND);
         }
+        DTOProducto productoEncontrado = dtoProductoIds.getResultList().get(0);
 
         return ResponseEntity.ok(productoEncontrado);
     }
@@ -82,18 +82,9 @@ public class ProductoController {
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
 
             Producto producto = productoRepository.findById(id).get();
-
-            /*
-
-            List<ProductoPersonalizado> elemento = entityManager.createQuery(
-                            "SELECT p FROM ProductoPersonalizado p where p.fechaBaja IS NULL AND p.producto.id = " + id, ProductoPersonalizado.class)
-                    .getResultList();
-
-            if (elemento.size() > 0) {
-                return new ResponseEntity<>("No se puede eliminar el producto porque tiene personalizaciones", HttpStatus.BAD_REQUEST);
+            if (producto == null) {
+                return new ResponseEntity<>("No se encontro el producto", HttpStatus.NOT_FOUND);
             }
-
-             */
 
             producto.setFechaBaja(LocalDateTime.now());
             for (PosiblePersonalizacion p : producto.obtenerPosiblesPersonalizaciones()) {
@@ -117,7 +108,7 @@ public class ProductoController {
             }
             return ResponseEntity.ok().body("Personalizacion eliminada");
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Error al eliminar el producto");
         }
     }
 
@@ -127,10 +118,10 @@ public class ProductoController {
         if (!bindingResult.hasErrors()) {
             try {
                 if (!categoriaRepository.existsById(producto.getCategoriaId())){
-                    return new ResponseEntity<>("La categoria no existe", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("La categoria no existe", HttpStatus.NOT_FOUND);
                 }
                 if (!gestorRepository.existsById(producto.getGestorId())){
-                    return new ResponseEntity<>("El gestor no existe", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("El gestor no existe", HttpStatus.NOT_FOUND);
                 }
                 Categoria categoria = categoriaRepository.findById(producto.getCategoriaId()).get();
                 Gestor gestor = gestorRepository.findById(producto.getGestorId()).get();
@@ -207,8 +198,7 @@ public class ProductoController {
                 if (tipoDePersonalizacionRepository.existsById(posiblePersonalizacionDTO.getTipoId())) {
                     tipo = tipoDePersonalizacionRepository.findById(posiblePersonalizacionDTO.getTipoId()).get();
                 } else {
-                    return ResponseEntity.badRequest().body("No se a encontrado el tipo en la base " +
-                            "de datos");
+                    return new ResponseEntity<>("El tipo de personalizacion no existe", HttpStatus.NOT_FOUND);
                 }
 
                 //traer el area
@@ -216,8 +206,7 @@ public class ProductoController {
                 if (areaRepository.existsById(posiblePersonalizacionDTO.getAreaId())) {
                     area = areaRepository.findById(posiblePersonalizacionDTO.getAreaId()).get();
                 } else {
-                    return ResponseEntity.badRequest().body("No se a encontrado el area en la base " +
-                            "de datos");
+                    return new ResponseEntity<>("El area de personalizacion no existe", HttpStatus.NOT_FOUND);
                 }
 
                 posiblePersonalizacion.setFechaModificacion(LocalDateTime.now());
@@ -246,8 +235,7 @@ public class ProductoController {
             if (tipoDePersonalizacionRepository.existsById(posiblePersonalizacionDTO.getTipoId())) {
                 tipo = tipoDePersonalizacionRepository.findById(posiblePersonalizacionDTO.getTipoId()).get();
             } else {
-                return ResponseEntity.badRequest().body("No se a encontrado el tipo en la base " +
-                        "de datos");
+                return new ResponseEntity<>("El tipo de personalizacion no existe", HttpStatus.NOT_FOUND);
             }
 
             //traer el area
@@ -255,8 +243,7 @@ public class ProductoController {
             if (areaRepository.existsById(posiblePersonalizacionDTO.getAreaId())) {
                 area = areaRepository.findById(posiblePersonalizacionDTO.getAreaId()).get();
             } else {
-                return ResponseEntity.badRequest().body("No se a encontrado el area en la base " +
-                        "de datos");
+                return new ResponseEntity<>("El area de personalizacion no existe", HttpStatus.NOT_FOUND);
             }
             PosiblePersonalizacion posiblePersonalizacion = new PosiblePersonalizacion(area, tipo, LocalDateTime.now());
             productoEncontrado.agregarPosiblesPersonalizaciones(posiblePersonalizacion);

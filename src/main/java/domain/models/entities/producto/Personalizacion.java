@@ -1,6 +1,7 @@
 package domain.models.entities.producto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import domain.models.DTO.projection.DTOPosiblePersonalizacion;
 import domain.models.Persistence;
 import lombok.Getter;
 import lombok.Setter;

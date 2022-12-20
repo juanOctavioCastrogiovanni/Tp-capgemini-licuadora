@@ -1,4 +1,4 @@
-package domain.models.entities.producto;
+package domain.models.DTO.projection;
 
 import lombok.Data;
 

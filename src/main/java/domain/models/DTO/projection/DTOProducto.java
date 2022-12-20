@@ -1,5 +1,6 @@
-package domain.models.entities.producto;
+package domain.models.DTO.projection;
 
+import domain.models.entities.producto.Producto;
 import lombok.Data;
 
 import java.util.List;
