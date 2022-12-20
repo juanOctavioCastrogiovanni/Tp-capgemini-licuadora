@@ -46,4 +46,7 @@ public class Personalizacion extends Persistence {
         this.precioXPersonalizacion = precioXPersonalizacion;
     }
 
+    public DTOPosiblePersonalizacion getPosiblePersonalizacion() {
+        return new DTOPosiblePersonalizacion(posiblePersonalizacion.getArea().getNombre(), posiblePersonalizacion.getTipo().getNombre(), posiblePersonalizacion.getId());
+    }
 }

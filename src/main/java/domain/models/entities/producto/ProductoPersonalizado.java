@@ -56,6 +56,10 @@ public class ProductoPersonalizado extends Persistence {
         return new ArrayList<>(personalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
     }
 
+    public List<DTOPersonalizaciones> getPersonalizacionesDTO() {
+        return new ArrayList<>(personalizaciones.stream().filter(p -> p.getFechaBaja() == null).map(p -> new DTOPersonalizaciones(p.getPosiblePersonalizacion(), p.getContenido(), p.getPrecioXPersonalizacion(), p.getId() )).collect(Collectors.toList()));
+    }
+
     public List<Personalizacion> obtenerPersonalizaciones(){
         return new ArrayList<>(personalizaciones);
     }

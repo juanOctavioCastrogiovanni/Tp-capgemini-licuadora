@@ -3,10 +3,7 @@ package domain.controllers;
 import domain.models.DTO.PersonalizacionDTO;
 import domain.models.DTO.PosiblePersonalizacionDTO;
 import domain.models.DTO.ProductoPersonalizadoDTO;
-import domain.models.entities.producto.Personalizacion;
-import domain.models.entities.producto.PosiblePersonalizacion;
-import domain.models.entities.producto.Producto;
-import domain.models.entities.producto.ProductoPersonalizado;
+import domain.models.entities.producto.*;
 import domain.models.entities.venta.Vendedor;
 import domain.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -47,26 +45,31 @@ public class ProductoPersonalizadoController {
 
     //Traigo todos los productos personalizados que no esten borrados
     @GetMapping({"/", ""})
-    public ResponseEntity<List<ProductoPersonalizado>> traerTodos() {
-        List<ProductoPersonalizado> productos = entityManager.createQuery(
-                        "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", ProductoPersonalizado.class)
-                .getResultList();
-        if (productos.isEmpty()) {
+    public ResponseEntity<List<DTOProductoPersonalizado>> traerTodos() {
+        TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
+                "SELECT new domain.models.entities.producto.DTOProductoPersonalizado(p) FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", DTOProductoPersonalizado.class);
+
+        List<DTOProductoPersonalizado> listaProductos = dtoProductoIds.getResultList();
+
+        if (listaProductos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+
+        return ResponseEntity.ok(listaProductos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductoPersonalizado> traerPorId(@PathVariable Integer id) {
-        try {
-            ProductoPersonalizado producto = entityManager.createQuery(
-                            "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL AND p.id = " + id, ProductoPersonalizado.class)
-                    .getResultList().get(0);
-            return new ResponseEntity<>(producto, HttpStatus.valueOf(producto == null ? 404 : 200));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<DTOProductoPersonalizado> traerPorId(@PathVariable Integer id) {
+        TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
+                "SELECT new domain.models.entities.producto.DTOProductoPersonalizado(p) FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", DTOProductoPersonalizado.class);
+
+        DTOProductoPersonalizado producto = dtoProductoIds.getResultList().get(0);
+
+        if (producto==null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        return ResponseEntity.ok(producto);
     }
 
     //Borro un producto, colocando la fecha de baja

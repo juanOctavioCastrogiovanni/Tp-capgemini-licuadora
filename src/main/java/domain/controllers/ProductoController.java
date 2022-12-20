@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -46,28 +47,33 @@ public class ProductoController {
 
     //Traigo todos los productos que no esten borrados
     @GetMapping({"/", ""})
-    public ResponseEntity<List<Producto>> traerTodos() {
-        List<Producto> productos = entityManager.createQuery(
-                        "SELECT p FROM Producto p WHERE p.fechaBaja IS NULL", Producto.class)
-                .getResultList();
-        if (productos.isEmpty()) {
+    public ResponseEntity<List<DTOProducto>> traerTodos() {
+
+        TypedQuery<DTOProducto> dtoProductoIds = entityManager.createQuery(
+                        "SELECT new domain.models.entities.producto.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL", DTOProducto.class);
+
+        List<DTOProducto> listaProductos = dtoProductoIds.getResultList();
+
+        if (listaProductos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return ResponseEntity.ok(productos);
+        return ResponseEntity.ok(listaProductos);
     }
 
     //Traigo un producto en particular
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> traerPorId(@PathVariable Integer id) {
-        try {
-            Producto producto = entityManager.createQuery(
-                            "SELECT p FROM Producto p WHERE p.fechaBaja IS NULL AND p.id = " + id, Producto.class)
-                    .getResultList().get(0);
-            return new ResponseEntity<>(producto, HttpStatus.valueOf(producto == null ? 404 : 200));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<DTOProducto> traerPorId(@PathVariable Integer id) {
+        TypedQuery<DTOProducto> dtoProductoIds = entityManager.createQuery(
+                "SELECT new domain.models.entities.producto.DTOProducto(p) FROM Producto p WHERE p.fechaBaja IS NULL", DTOProducto.class);
+
+        DTOProducto productoEncontrado = dtoProductoIds.getResultList().get(0);
+
+        if (productoEncontrado == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        return ResponseEntity.ok(productoEncontrado);
     }
 
     //Borro un producto, colocando la fecha de baja, tambien a sus posibles personalizaciones
