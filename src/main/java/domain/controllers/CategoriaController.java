@@ -15,7 +15,7 @@ import java.util.List;
 public class CategoriaController {
     @Autowired
     private CategoriaRepository categoriaRepository;
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping({"", "/"})
     public ResponseEntity<?> obtenerCategorias(){
       try{

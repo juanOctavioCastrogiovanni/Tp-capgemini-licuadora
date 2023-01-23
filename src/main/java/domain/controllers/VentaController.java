@@ -13,7 +13,7 @@ public class VentaController {
     @Autowired
     private VentaRepository ventaRepository;
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarVenta(@PathVariable(name = "id") Integer id){
         try {

@@ -16,7 +16,7 @@ public class ItemController {
     @Autowired
     private CarritoRepository repoCarrito;
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarItem(@PathVariable(name = "id") Integer id){
         if (!repoItem.existsById(id)){
