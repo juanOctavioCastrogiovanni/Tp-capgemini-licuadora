@@ -71,7 +71,7 @@ public class TpCapgeminiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TpCapgeminiApplication.class, args);
 	}
-
+/*
 		@Bean
 		public CommandLineRunner init() {
 
@@ -344,6 +344,6 @@ public class TpCapgeminiApplication {
 		};
 
 
-
+*/
 }
 
