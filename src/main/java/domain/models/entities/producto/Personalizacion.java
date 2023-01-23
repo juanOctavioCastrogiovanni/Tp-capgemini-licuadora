@@ -1,6 +1,7 @@
 package domain.models.entities.producto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import domain.models.DTO.projection.DTOPosiblePersonalizacion;
 import domain.models.Persistence;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,4 +47,7 @@ public class Personalizacion extends Persistence {
         this.precioXPersonalizacion = precioXPersonalizacion;
     }
 
+    public DTOPosiblePersonalizacion getPosiblePersonalizacion() {
+        return new DTOPosiblePersonalizacion(posiblePersonalizacion.getArea().getNombre(), posiblePersonalizacion.getTipo().getNombre(), posiblePersonalizacion.getId());
+    }
 }

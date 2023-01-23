@@ -3,6 +3,7 @@ package domain.controllers;
 import domain.models.entities.producto.TipoDePersonalizacion;
 import domain.repositories.TipoDePersonalizacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -17,27 +18,44 @@ public class TipoController {
     private TipoDePersonalizacionRepository tipoRepository;
 
     @GetMapping({"", "/"})
-    public List<TipoDePersonalizacion> tipos(){
-        return tipoRepository.findAll();
+    public ResponseEntity<?> tipos(){
+        try{
+            return ResponseEntity.ok(tipoRepository.findAll());
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("No se encontraron listas de tipos");
+        }
     }
 
     @GetMapping("/{id}")
-    public Optional<TipoDePersonalizacion> tipo(@PathVariable(name = "id") Integer id){
-        return tipoRepository.findById(id);
+    public ResponseEntity<?> tipo(@PathVariable(name = "id") Integer id){
+        try{
+            return ResponseEntity.ok(tipoRepository.findById(id));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("No se encontró el tipo");
+        }
     }
 
     @PostMapping({"", "/"})
-    public TipoDePersonalizacion agregarTipo(@RequestBody TipoDePersonalizacion tipo){
-        tipo.setFechaCreacion(LocalDateTime.now());
-        tipoRepository.save(tipo);
-        return tipo;
+    public ResponseEntity<String> agregarTipo(@RequestBody TipoDePersonalizacion tipo){
+        try{
+            tipo.setFechaCreacion(LocalDateTime.now());
+            tipoRepository.save(tipo);
+            return ResponseEntity.ok("Tipo agregado");
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("No se pudo agregar el tipo");
+        }
     }
 
     @PutMapping("/{id}")
-    public TipoDePersonalizacion modificarTipo(@PathVariable(name = "id") Integer id, @RequestBody TipoDePersonalizacion tipo){
-        tipo.setId(id);
-        tipoRepository.save(tipo);
-        return tipo;
+    public ResponseEntity<?> modificarTipo(@PathVariable(name = "id") Integer id, @RequestBody TipoDePersonalizacion tipo){
+        try{
+            tipo.setId(id);
+            tipoRepository.save(tipo);
+            return ResponseEntity.ok("Tipo modificado");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("No se pudo modificar el tipo");
+        }
     }
 
 }

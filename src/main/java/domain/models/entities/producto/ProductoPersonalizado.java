@@ -1,6 +1,7 @@
 package domain.models.entities.producto;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import domain.models.DTO.projection.DTOPersonalizaciones;
 import domain.models.Persistence;
 import domain.models.entities.venta.Vendedor;
 import lombok.Getter;
@@ -54,6 +55,10 @@ public class ProductoPersonalizado extends Persistence {
 
     public List<Personalizacion> getPersonalizaciones() {
         return new ArrayList<>(personalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
+    }
+
+    public List<DTOPersonalizaciones> getPersonalizacionesDTO() {
+        return new ArrayList<>(personalizaciones.stream().filter(p -> p.getFechaBaja() == null).map(p -> new DTOPersonalizaciones(p.getPosiblePersonalizacion(), p.getContenido(), p.getPrecioXPersonalizacion(), p.getId() )).collect(Collectors.toList()));
     }
 
     public List<Personalizacion> obtenerPersonalizaciones(){

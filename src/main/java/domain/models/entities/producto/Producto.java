@@ -1,7 +1,7 @@
 package domain.models.entities.producto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import domain.models.DTO.projection.DTOPosiblePersonalizacion;
 import domain.models.Persistence;
 import domain.models.entities.venta.Gestor;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,6 +66,10 @@ public class Producto extends Persistence {
     public List<PosiblePersonalizacion> getPosiblesPersonalizaciones(){
         return new ArrayList<>(posiblesPersonalizaciones.stream().filter(p -> p.getFechaBaja() == null).collect(Collectors.toList()));
     }
+    public List<DTOPosiblePersonalizacion> getPosiblesPersonalizacionesDTO(){
+        return new ArrayList<>(posiblesPersonalizaciones.stream().filter(p -> p.getFechaBaja() == null).map(p -> new DTOPosiblePersonalizacion(p.getArea().getNombre(),p.getTipo().getNombre(),p.getId())).collect(Collectors.toList()));
+    }
+
 
     public List<PosiblePersonalizacion> obtenerPosiblesPersonalizaciones() {
         return new ArrayList<>(posiblesPersonalizaciones);

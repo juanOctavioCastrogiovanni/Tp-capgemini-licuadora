@@ -3,6 +3,7 @@ package domain.controllers;
 import domain.repositories.CarritoRepository;
 import domain.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarItem(@PathVariable(name = "id") Integer id){
         if (!repoItem.existsById(id)){
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("No existe el item", HttpStatus.NOT_FOUND);
         }
         repoItem.deleteById(id);
         return ResponseEntity.ok("Item eliminado");

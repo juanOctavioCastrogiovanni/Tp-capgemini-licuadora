@@ -1,22 +1,17 @@
 package domain.controllers;
 
-import com.sun.xml.internal.ws.developer.StreamingAttachment;
-import domain.models.DTO.CarritoDTO;
-import domain.models.DTO.DireccionDTO;
 import domain.models.DTO.VentaDTO;
 import domain.models.entities.venta.*;
 import domain.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.Binding;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/carrito")
@@ -46,24 +41,24 @@ public class CarritoController {
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}")
-    public ResponseEntity<Carrito> obtenerCarrito(@PathVariable(name = "id") Integer id){
-        Optional<Carrito> carrito = repoCarrito.findById(id);
-        if(carrito.isPresent()){
-            return ResponseEntity.ok(carrito.get());
+    public ResponseEntity<?> obtenerCarrito(@PathVariable(name = "id") Integer id){
+        Carrito carrito = repoCarrito.findById(id).get();
+        if(carrito != null){
+            return ResponseEntity.ok(carrito);
         }
-        return ResponseEntity.notFound().build();
+        return new ResponseEntity<>("No se encontro el carrito", HttpStatus.NOT_FOUND);
     }
 
 
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping({"/", ""})
-    public @ResponseBody Integer crearCarrito() {
+    public ResponseEntity<?> crearCarrito() {
         try {
             Carrito carrito = new Carrito(LocalDateTime.now());
             repoCarrito.save(carrito);
-            return carrito.getId();
+            return new ResponseEntity<>(carrito.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
-            return null;
+            return new ResponseEntity<>("No se ha podido crear el carrito", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -95,13 +90,11 @@ public class CarritoController {
                 itemAAgregar.calcularSubTotal();
                 carritoActual.agregarItemCarrito(itemAAgregar);
                 repoItemCarrito.save(itemAAgregar);
-                System.out.println("Se agrego el item al carrito");
             } else {
                 //Si esta la publicacion, aumenta la cantidad
                 ItemCarrito itemAAumentar = carritoActual.getItems().stream().filter(item -> item.getPublicacion().getId() == publicacionId).findFirst().get();
                 itemAAumentar.setCantidad(itemAAumentar.getCantidad() + 1);
                 itemAAumentar.calcularSubTotal();
-                System.out.println("Se aumento la cantidad del item");
             }
 
             carritoActual.calcularTotalCarrito();
@@ -119,7 +112,7 @@ public class CarritoController {
     public ResponseEntity<String> eliminarItem(@PathVariable Integer carritoId, @PathVariable Integer itemId) {
         try {
             if (!repoCarrito.existsById(carritoId) || !repoItemCarrito.existsById(itemId)) {
-                return ResponseEntity.badRequest().body("No existe el carrito o el item");
+                return new ResponseEntity<>("No existe el carrito o el item", HttpStatus.NOT_FOUND);
             }
 
             Carrito carritoActual = repoCarrito.findById(carritoId).get();
@@ -155,11 +148,9 @@ public class CarritoController {
             if (itemARemover.getCantidad() > 1) {
                 itemARemover.setCantidad(itemARemover.getCantidad() - 1);
                 itemARemover.calcularSubTotal();
-                System.out.println("Se disminuyo la cantidad del item");
             } else {
                 carritoActual.removerItemCarrito(itemARemover);
                 repoItemCarrito.delete(itemARemover);
-                System.out.println("Se removio el item del carrito");
             }
 
             carritoActual.calcularTotalCarrito();
@@ -181,14 +172,14 @@ public class CarritoController {
 
       if (!bindingResult.hasErrors()) {
           if (!repoCarrito.existsById(carritoId)) {
-              return ResponseEntity.badRequest().body("No existe el carrito");
+              return new ResponseEntity<>("No existe el carrito", HttpStatus.NOT_FOUND);
           }
           Carrito carrito = repoCarrito.findById(carritoId).get();
           if (carrito.getItems().size() == 0) {
-              return ResponseEntity.badRequest().body("No hay items en el carrito");
+              return new ResponseEntity<>("No hay items en el carrito", HttpStatus.NOT_FOUND);
           }
           if (!repoTipoDePago.existsById(venta.getPagoId())) {
-              return ResponseEntity.badRequest().body("No existe el tipo de pago");
+              return new ResponseEntity<>("No existe el tipo de pago", HttpStatus.NOT_FOUND);
           }
           TipoDePago tipoDePago = repoTipoDePago.findById(venta.getPagoId()).get();
 
@@ -200,7 +191,7 @@ public class CarritoController {
           if(venta.getDireccionId()==null){
               direccion = repoDireccion.save(new Direccion(venta.getCalle(), venta.getAltura(), venta.getPiso(), venta.getDepartamento(), venta.getLocalidad(), venta.getProvincia(), LocalDateTime.now()));
           } else if(!repoDireccion.existsById(venta.getDireccionId())){
-                return ResponseEntity.badRequest().body("No existe la direccion");
+                return new ResponseEntity<>("No existe la direccion", HttpStatus.NOT_FOUND);
           } else {
               direccion = repoDireccion.findById(venta.getDireccionId()).get();
           }
@@ -213,7 +204,7 @@ public class CarritoController {
           if(venta.getClienteId()==null){
               cliente = repoCliente.save(new Cliente(venta.getNombreCliente(), venta.getApellidoCliente(), venta.getEmailCliente(), direccion, LocalDateTime.now()));
           } else if (!repoCliente.existsById(venta.getClienteId())) {
-                return ResponseEntity.badRequest().body("No existe el cliente");
+                return new ResponseEntity<>("No existe el cliente", HttpStatus.NOT_FOUND);
           } else{
               cliente = repoCliente.findById(venta.getClienteId()).get();
           }
@@ -236,6 +227,7 @@ public class CarritoController {
 
 
     /*
+    NO USAR
     @Transactional
     @PostMapping({"/", ""})
     public ResponseEntity<String> createCarrito(@RequestBody @Valid CarritoDTO carritoEntrante,

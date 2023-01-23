@@ -1,12 +1,9 @@
 package domain.controllers;
 
 import domain.models.DTO.PersonalizacionDTO;
-import domain.models.DTO.PosiblePersonalizacionDTO;
 import domain.models.DTO.ProductoPersonalizadoDTO;
-import domain.models.entities.producto.Personalizacion;
-import domain.models.entities.producto.PosiblePersonalizacion;
-import domain.models.entities.producto.Producto;
-import domain.models.entities.producto.ProductoPersonalizado;
+import domain.models.DTO.projection.DTOProductoPersonalizado;
+import domain.models.entities.producto.*;
 import domain.models.entities.venta.Vendedor;
 import domain.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/productos-personalizados")
@@ -47,26 +44,30 @@ public class ProductoPersonalizadoController {
 
     //Traigo todos los productos personalizados que no esten borrados
     @GetMapping({"/", ""})
-    public ResponseEntity<List<ProductoPersonalizado>> traerTodos() {
-        List<ProductoPersonalizado> productos = entityManager.createQuery(
-                        "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", ProductoPersonalizado.class)
-                .getResultList();
-        if (productos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> traerTodos() {
+        TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
+                "SELECT new domain.models.DTO.projection.DTOProductoPersonalizado(p) FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL", DTOProductoPersonalizado.class);
+
+        List<DTOProductoPersonalizado> listaProductos = dtoProductoIds.getResultList();
+
+        if (listaProductos.isEmpty()) {
+            return new ResponseEntity<>("No se ha encontrado productos personalizados",HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+
+        return ResponseEntity.ok(listaProductos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductoPersonalizado> traerPorId(@PathVariable Integer id) {
-        try {
-            ProductoPersonalizado producto = entityManager.createQuery(
-                            "SELECT p FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL AND p.id = " + id, ProductoPersonalizado.class)
-                    .getResultList().get(0);
-            return new ResponseEntity<>(producto, HttpStatus.valueOf(producto == null ? 404 : 200));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> traerPorId(@PathVariable Integer id) {
+        TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
+                "SELECT new domain.models.DTO.projection.DTOProductoPersonalizado(p) FROM ProductoPersonalizado p WHERE p.fechaBaja IS NULL AND p.id = " + id, DTOProductoPersonalizado.class);
+
+        if (dtoProductoIds.getResultList().isEmpty()) {
+            return new ResponseEntity<>("No se ha encontrado el producto personalizado con el id = " + id,HttpStatus.NOT_FOUND);
         }
+
+        DTOProductoPersonalizado producto = dtoProductoIds.getResultList().get(0);
+        return ResponseEntity.ok(producto);
     }
 
     //Borro un producto, colocando la fecha de baja
@@ -81,7 +82,7 @@ public class ProductoPersonalizadoController {
             }
             return ResponseEntity.ok().body("Producto eliminado");
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("No se ha encontrado el producto personalizado con el id = " + id,HttpStatus.NO_CONTENT);
         }
     }
 
@@ -96,10 +97,10 @@ public class ProductoPersonalizadoController {
                 producto.setPrecio(producto.getPrecio() - personalizacion.getPrecioXPersonalizacion());
                 return ResponseEntity.ok().body("Personalizacion eliminada");
             } else {
-                return ResponseEntity.notFound().build();
+                return new ResponseEntity<>("No se puede borrar una personalizacion que no pertenece a este producto personalizado",HttpStatus.NO_CONTENT);
             }
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("No se ha podido eliminar la personalizacion", HttpStatus.NO_CONTENT);
         }
     }
 
@@ -173,17 +174,17 @@ public class ProductoPersonalizadoController {
         if (!bindingResult.hasErrors()) {
             try {
                 if (!prodPers.existsById(id)) {
-                    return ResponseEntity.notFound().build();
+                    return new ResponseEntity<>("Producto con el id "+ id + " no encontrado", HttpStatus.NOT_FOUND);
                 }
 
                 ProductoPersonalizado producto = prodPers.findById(id).get();
 
                 if (!prod.existsById(productoPersonalizadoEntrante.getProductoId())) {
-                    return ResponseEntity.badRequest().body("El producto que intenta agregar no existe");
+                    return new ResponseEntity<>("El producto que intenta agregar no existe", HttpStatus.NOT_FOUND);
                 }
 
                 if (!vendedorRepository.existsById(productoPersonalizadoEntrante.getVendedorId())) {
-                    return ResponseEntity.badRequest().body("El vendedor que intenta agregar no existe");
+                    return new ResponseEntity<>("El vendedor que intenta agregar no existe", HttpStatus.NOT_FOUND);
                 }
                 Vendedor vendedor = vendedorRepository.findById(productoPersonalizadoEntrante.getVendedorId()).get();
                 Producto productoAAgregar = prod.findById(productoPersonalizadoEntrante.getProductoId()).get();
