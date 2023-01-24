@@ -51,7 +51,7 @@ public class ClienteController {
             return new ResponseEntity<>("Error al crear el cliente", HttpStatus.BAD_REQUEST);
         }
     }
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}/direccion")
     public ResponseEntity<?> obtenerDireccion(@PathVariable Integer id) {
         try {
@@ -64,7 +64,7 @@ public class ClienteController {
             return new ResponseEntity<>("Error al obtener la direccion", HttpStatus.BAD_REQUEST);
         }
     }
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCliente(@PathVariable Integer id) {
         try {
@@ -78,7 +78,7 @@ public class ClienteController {
         }
 
     }
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/iniciar-sesion")
     public ResponseEntity<?> iniciarSesion(@RequestBody InicioSesionDTO clienteEntrante) {
         if(!repoCliente.existsByEmail(clienteEntrante.getEmail())){
@@ -97,7 +97,7 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}/carritos")
     public ResponseEntity<?> getCarritos(@PathVariable(name = "id") Integer id) {
         Cliente cliente = repoCliente.findById(id).orElse(null);

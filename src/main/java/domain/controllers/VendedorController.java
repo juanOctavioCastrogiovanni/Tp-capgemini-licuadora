@@ -18,7 +18,7 @@ public class VendedorController {
     @Autowired
     private VendedorRepository vendedorRepository;
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping({"", "/"})
     public ResponseEntity<?> vendedores(){
 

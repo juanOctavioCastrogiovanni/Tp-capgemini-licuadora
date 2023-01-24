@@ -23,7 +23,7 @@ public class PublicacionController {
     @PersistenceContext
     private EntityManager em;
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping({"/", ""})
     public ResponseEntity<Page<Publicacion>> getPublicaciones(@RequestParam(name = "category", required = false) String categoria,
                                            @RequestParam(name = "seller", required = false) String vendedor,
@@ -80,7 +80,7 @@ public class PublicacionController {
         */
     }
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}")
     public ResponseEntity<?> getPublicacion(@PathVariable(name = "id") Integer id) {
         try{

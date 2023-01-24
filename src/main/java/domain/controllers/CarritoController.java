@@ -39,7 +39,7 @@ public class CarritoController {
     private VentaRepository repoVenta;
 
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCarrito(@PathVariable(name = "id") Integer id){
         Carrito carrito = repoCarrito.findById(id).get();
@@ -50,7 +50,7 @@ public class CarritoController {
     }
 
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping({"/", ""})
     public ResponseEntity<?> crearCarrito() {
         try {
@@ -62,7 +62,7 @@ public class CarritoController {
         }
     }
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @Transactional
     @PostMapping("/{carritoId}/publicacion/{publicacionId}")
     public ResponseEntity<String> agregar(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
@@ -106,7 +106,7 @@ public class CarritoController {
             return ResponseEntity.badRequest().body("Error al agregar publicacion al carrito");
         }
     }
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @Transactional
     @DeleteMapping("/{carritoId}/item/{itemId}")
     public ResponseEntity<String> eliminarItem(@PathVariable Integer carritoId, @PathVariable Integer itemId) {
@@ -128,7 +128,7 @@ public class CarritoController {
     }
 
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @Transactional
     @DeleteMapping("/{carritoId}/restar-publicacion/{publicacionId}")
     public ResponseEntity<String> remover(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
@@ -162,7 +162,7 @@ public class CarritoController {
 
     }
 
-    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/{carritoId}/venta")
     public  ResponseEntity<String> ventaRealizada(
             @PathVariable(name="carritoId") Integer carritoId,
