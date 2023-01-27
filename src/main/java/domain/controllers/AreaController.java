@@ -17,6 +17,10 @@ public class AreaController {
     @Autowired
     private AreaRepository areaRepository;
 
+
+
+    // This method retrieves all the areas from the database and returns them in the response.
+    //Este método recupera todas las áreas de la base de datos y las devuelve en la respuesta.
     @GetMapping({"", "/"})
     public ResponseEntity<?> areas(){
         try {
@@ -27,6 +31,8 @@ public class AreaController {
         }
     }
 
+    // This method retrieves a single area from the database and returns it in the response.
+    //Este método recupera una sola área de la base de datos y la devuelve en la respuesta.
     @GetMapping("/{id}")
     public ResponseEntity<?> area(@PathVariable(name = "id") Integer id){
         try {
@@ -37,6 +43,8 @@ public class AreaController {
         }
     }
 
+    // This method adds a new area to the database.
+    //Este método agrega una nueva área a la base de datos.
     @PostMapping({"", "/"})
     public ResponseEntity<String> agregarArea(@RequestBody AreaDePersonalizacion area){
           try {
@@ -48,7 +56,8 @@ public class AreaController {
           }
     }
 
-
+    // This method updates an existing area in the database.
+    //Este método actualiza una área existente en la base de datos.
     @PutMapping("/{id}")
     public ResponseEntity<String> modificarArea(@PathVariable(name = "id") Integer id, @RequestBody AreaDePersonalizacion area){
         try {
@@ -61,6 +70,8 @@ public class AreaController {
         }
     }
 
+    // This method deletes an existing area from the database.
+    //Este método elimina una área existente de la base de datos.
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarArea(@PathVariable(name = "id") Integer id){
         try {

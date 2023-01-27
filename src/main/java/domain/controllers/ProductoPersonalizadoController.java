@@ -43,6 +43,8 @@ public class ProductoPersonalizadoController {
     private EntityManager entityManager;
 
     //Traigo todos los productos personalizados que no esten borrados
+    //Get all products that are not deleted
+    
     @GetMapping({"/", ""})
     public ResponseEntity<?> traerTodos() {
         TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
@@ -57,6 +59,8 @@ public class ProductoPersonalizadoController {
         return ResponseEntity.ok(listaProductos);
     }
 
+    //Traigo un producto personalizado por id a partir de una proyeccion de dto que mientras este no este borrado, es decir su fecha de baja sea == a null
+    //Get a product by id from a projection of dto that while this is not deleted, that is, its deletion date is == to null
     @GetMapping("/{id}")
     public ResponseEntity<?> traerPorId(@PathVariable Integer id) {
         TypedQuery<DTOProductoPersonalizado> dtoProductoIds = entityManager.createQuery(
@@ -71,6 +75,7 @@ public class ProductoPersonalizadoController {
     }
 
     //Borro un producto, colocando la fecha de baja
+    //Delete a product, placing the deletion date
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
@@ -86,6 +91,8 @@ public class ProductoPersonalizadoController {
         }
     }
 
+    //borro una personalizacion de un producto personalizado 
+    //delete a personalization from a personalized product
     @Transactional
     @DeleteMapping("{id}/personalizar/{idPersonalizacion}")
     public ResponseEntity<String> eliminarPersonalizacion(@PathVariable Integer id, @PathVariable Integer idPersonalizacion) {
@@ -104,6 +111,8 @@ public class ProductoPersonalizadoController {
         }
     }
 
+    //Creo un producto personalizado
+    //Create a personalized product
     @PostMapping({"/", ""})
     public ResponseEntity<String> crear(@RequestBody ProductoPersonalizadoDTO productoPersonalizado) {
         try {
@@ -119,6 +128,7 @@ public class ProductoPersonalizadoController {
             Vendedor vendedor = vendedorRepository.findById(productoPersonalizado.getVendedorId()).get();
 
             //Crear el producto personalizado
+            //Create the personalized product
             ProductoPersonalizado productoPersonalizado1 = new ProductoPersonalizado( producto, vendedor, producto.getPrecioBase(), LocalDateTime.now());
             prodPers.save(productoPersonalizado1);
             return ResponseEntity.ok().body("Producto creado");
@@ -127,6 +137,8 @@ public class ProductoPersonalizadoController {
         }
     } 
 
+    //Personalizo un producto personalizado
+    //Personalize a personalized product
     @Transactional
     @PostMapping("/{id}/personalizar")
     public ResponseEntity<String> personalizar(@PathVariable(name="id") Integer id,
@@ -137,6 +149,9 @@ public class ProductoPersonalizadoController {
             try {
                 //Si existe la personalizacion en la base de datos, verifico que pertenezca al producto
                 //que se encuentra en producto personalizado
+
+                //If the personalization exists in the database, I verify that it belongs to the product
+                //that is in personalized product
                 if (repoPersonalizacionPosible.existsById(personalizacionEntrante.getPosiblePersonalizacionId())){
                     PosiblePersonalizacion posiblePersonalizacionDB = repoPersonalizacionPosible.findById(personalizacionEntrante.getPosiblePersonalizacionId()).get();
                     ProductoPersonalizado productoPersonalizado = prodPers.findById(id).get();
@@ -144,11 +159,15 @@ public class ProductoPersonalizadoController {
 
                     /*En este caso verifico que esa personalizacion existente corresponda al producto del producto
                     del producto personalizado*/
+
+                    /*In this case I verify that the existing personalization corresponds to the product of the product
+                    of the personalized product*/
                     if(!producto.getPosiblesPersonalizaciones().contains(posiblePersonalizacionDB)){
                         return ResponseEntity.badRequest().body("La personalizacion no pertenece al producto de la posible personalizacion");
                     }
 
                     //Creo una nueva personalizacion, la agrego al producto personalizado y sumo el precio total
+                    //Create a new personalization, add it to the personalized product and add the total price
                     Personalizacion nuevaPersonaliacion = new Personalizacion(posiblePersonalizacionDB, personalizacionEntrante.getContenido(), personalizacionEntrante.getPrecioPersonalizacion(), LocalDateTime.now());
                     repoPersonalizacion.save(nuevaPersonaliacion);
                     productoPersonalizado.agregarPersonalizacion(nuevaPersonaliacion);
@@ -165,7 +184,8 @@ public class ProductoPersonalizadoController {
             return ResponseEntity.badRequest().body("Personalizacion , verifique los campos de envio");
     }
 
-
+    //Modifico un producto personalizado
+    //Modify a personalized product
     @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<String> modificar(@PathVariable Integer id,
@@ -223,13 +243,16 @@ public class ProductoPersonalizadoController {
                     Personalizacion personalizacion = repoPersonalizacion.findById(idPersonalizacion).get();
 
                     //Verifico que la personalizacion que se quiere modificar pertenezca al producto personalizado
+                    //Verify that the personalization to be modified belongs to the personalized product
                     if(!productoPersonalizado.getPersonalizaciones().contains(personalizacion)){
                         return ResponseEntity.badRequest().body("La personalizacion no pertenece al producto personalizado");
                     }
                     //Modifico el precio total del producto personalizado
+                    //Modify the total price of the personalized product
                     productoPersonalizado.setPrecio(productoPersonalizado.getPrecio() - personalizacion.getPrecioXPersonalizacion() + personalizacionEntrante.getPrecioPersonalizacion());
 
                     //Modifico la personalizacion
+                    //Modify the personalization
                     personalizacion.setContenido(personalizacionEntrante.getContenido());
                     personalizacion.setPrecioXPersonalizacion(personalizacionEntrante.getPrecioPersonalizacion());
                     personalizacion.setFechaModificacion(LocalDateTime.now());

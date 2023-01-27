@@ -28,15 +28,13 @@ public class ClienteController {
     private ClienteRepository repoCliente;
 
     @Autowired
-    private CarritoRepository repoCarrito;
-
-    @Autowired
     private VentaRepository repoVenta;
 
     @Autowired
     private DireccionRepository repoDireccion;
 
-
+    //Este crea un nuevo cliente 
+    // This creates a new client
     @PostMapping({"/", ""})
     public ResponseEntity<?> crearCliente(@RequestBody ClienteDTO clienteEntrante) {
         try {
@@ -51,7 +49,10 @@ public class ClienteController {
             return new ResponseEntity<>("Error al crear el cliente", HttpStatus.BAD_REQUEST);
         }
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+
+    //Este metodo devuelve la direccion de un cliente existente
+    // This method returns the address of an existing client
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping("/{id}/direccion")
     public ResponseEntity<?> obtenerDireccion(@PathVariable Integer id) {
         try {
@@ -64,7 +65,10 @@ public class ClienteController {
             return new ResponseEntity<>("Error al obtener la direccion", HttpStatus.BAD_REQUEST);
         }
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+
+    //Este metodo devuelve el cliente con el id que se le pasa por parametro
+    // This method returns the client with the id that is passed as a parameter
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCliente(@PathVariable Integer id) {
         try {
@@ -78,7 +82,10 @@ public class ClienteController {
         }
 
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+
+    //Este metodo valida al cliente con su contraseña y devuelve el cliente
+    // This method validates the client with its password and returns the client
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @PostMapping("/iniciar-sesion")
     public ResponseEntity<?> iniciarSesion(@RequestBody InicioSesionDTO clienteEntrante) {
         if(!repoCliente.existsByEmail(clienteEntrante.getEmail())){
@@ -97,7 +104,9 @@ public class ClienteController {
         return ResponseEntity.ok(cliente);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    //Este metodo devuelve todos los clientes del cliente
+    // This method returns all the clients of the client
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping("/{id}/carritos")
     public ResponseEntity<?> getCarritos(@PathVariable(name = "id") Integer id) {
         Cliente cliente = repoCliente.findById(id).orElse(null);
@@ -110,6 +119,8 @@ public class ClienteController {
         return ResponseEntity.ok(cliente.getCarritos());
     }
 
+    //Este metodo devuelve un carrito del cliente
+    // This method returns a cart from the client
     @GetMapping("/{id}/carritos/{idCarrito}")
     public ResponseEntity<?> getCarrito(
             @PathVariable(name = "id") Integer id,

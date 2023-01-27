@@ -15,6 +15,8 @@ public class DireccionController {
     @Autowired
     private DireccionRepository repoDireccion;
 
+    //Este metodo permite crear una direccion nueva
+    // This method allows you to create a new address
     @PostMapping({"/", ""})
     public ResponseEntity<?> crearDireccion(@RequestBody DireccionDTO direccionEntrante) {
         try{
@@ -25,6 +27,9 @@ public class DireccionController {
             return ResponseEntity.badRequest().body("Error al crear direccion");
         }
     }
+
+    //Este metodo devuelve todas las direcciones no se implemento ninguna validacion de seguridad con spring security como JWT en este proyecto de practica
+    // This method returns all addresses no security validation with spring security as JWT was implemented in this practice project
     @GetMapping({"/", ""})
     public ResponseEntity<?> obtenerDirecciones() {
         try{
@@ -34,6 +39,8 @@ public class DireccionController {
         }
     }
 
+    //Este metodo devuelve una direccion por id
+    // This method returns an address by id
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerDireccion(@PathVariable(name = "id") Integer id) {
         try{

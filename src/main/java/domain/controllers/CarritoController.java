@@ -38,8 +38,12 @@ public class CarritoController {
     @Autowired
     private VentaRepository repoVenta;
 
+    // This method retrieves all the carritos from the database and returns them in the response. 
+    // Use crossOrigin to allow the front to access the data because exist incompatibility in cors.
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    // Este método recupera todos los carritos de la base de datos y los devuelve en la respuesta.
+    // Use crossOrigin para permitir que el front acceda a los datos porque existe incompatibilidad en cors.
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCarrito(@PathVariable(name = "id") Integer id){
         Carrito carrito = repoCarrito.findById(id).get();
@@ -49,8 +53,9 @@ public class CarritoController {
         return new ResponseEntity<>("No se encontro el carrito", HttpStatus.NOT_FOUND);
     }
 
-
-    @CrossOrigin(origins = "http://localhost:4200")
+    // This method creates a new carrito and returns it in the response.
+    // Este método crea un nuevo carrito y lo devuelve en la respuesta.
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @PostMapping({"/", ""})
     public ResponseEntity<?> crearCarrito() {
         try {
@@ -62,10 +67,17 @@ public class CarritoController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    // This method adds a new item to the cart and returns it in the response.
+    // Este método agrega un nuevo elemento al carrito y lo devuelve en la respuesta.
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @Transactional
     @PostMapping("/{carritoId}/publicacion/{publicacionId}")
     public ResponseEntity<String> agregar(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
+
+        // exist validations in the case that there is no stock of the publication, that there is no cart or publication, that you cannot add a product from another seller
+        // Existe validaciones en el caso de que no haya stock de la publicacion, que no exista el carrito o la publicacion, que no se pueda agregar un producto de otro vendedor
+
+
         try {
             if (!repoCarrito.existsById(carritoId) || !repoPublicacion.existsById(publicacionId)) {
                 return ResponseEntity.badRequest().body("No existe el carrito o la publicacion");
@@ -85,6 +97,8 @@ public class CarritoController {
 
 
             //Si no esta la publicacion agregala al carrito
+            //If the publication is not there, add it to the cart
+
             if (!carritoActual.getItems().stream().anyMatch(item -> item.getPublicacion().getId().equals(publicacionId))) {
                 ItemCarrito itemAAgregar = new ItemCarrito(publicacionAAgregar, 1, publicacionAAgregar.getProductoPersonalizado().getPrecio(), 0F, LocalDateTime.now());
                 itemAAgregar.calcularSubTotal();
@@ -92,11 +106,14 @@ public class CarritoController {
                 repoItemCarrito.save(itemAAgregar);
             } else {
                 //Si esta la publicacion, aumenta la cantidad
+                //If the publication is there, increase the quantity
                 ItemCarrito itemAAumentar = carritoActual.getItems().stream().filter(item -> item.getPublicacion().getId() == publicacionId).findFirst().get();
                 itemAAumentar.setCantidad(itemAAumentar.getCantidad() + 1);
                 itemAAumentar.calcularSubTotal();
             }
 
+            //calcula el total y lo modifica en la base de datos
+            //calculate the total and modify it in the database
             carritoActual.calcularTotalCarrito();
 
 
@@ -106,7 +123,10 @@ public class CarritoController {
             return ResponseEntity.badRequest().body("Error al agregar publicacion al carrito");
         }
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+
+    // Este método elimina un elemento del carrito y lo devuelve en la respuesta.
+    // This method removes an item from the cart and returns it in the response.
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @Transactional
     @DeleteMapping("/{carritoId}/item/{itemId}")
     public ResponseEntity<String> eliminarItem(@PathVariable Integer carritoId, @PathVariable Integer itemId) {
@@ -127,8 +147,13 @@ public class CarritoController {
         }
     }
 
+    // Este metodo a diferencia del anterior no elimina el item lo que hace es restar en uno su cantidad excepto que su cantidad 
+    // sea 1 en ese caso lo elimina
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    // This method, unlike the previous one, does not delete the item, what it does is subtract one from its quantity except that its quantity
+    // is 1 in that case it deletes it
+
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @Transactional
     @DeleteMapping("/{carritoId}/restar-publicacion/{publicacionId}")
     public ResponseEntity<String> remover(@PathVariable Integer carritoId, @PathVariable Integer publicacionId) {
@@ -137,13 +162,16 @@ public class CarritoController {
                 return ResponseEntity.badRequest().body("No existe el carrito o la publicacion");
             }
 
-            Publicacion publicacionARemover = repoPublicacion.findById(publicacionId).get();
             Carrito carritoActual = repoCarrito.findById(carritoId).get();
 
+            //recorre la lista de publicaciones dentro del carrito a ver si alguna tiene el id que viene por parametro 
+            //walks through the list of publications within the cart to see if any have the id that comes by parameter
             if (!carritoActual.getItems().stream().anyMatch(item -> item.getPublicacion().getId().equals(publicacionId))) {
                 return ResponseEntity.badRequest().body("No se puede remover un producto que no esta en el carrito");
             }
 
+            //si la cantidad es mayor a 1, resta en uno la cantidad y calcula el subtotal sino lo elimina
+            //if the quantity is greater than 1, subtract one from the quantity and calculate the subtotal otherwise it deletes it
             ItemCarrito itemARemover = carritoActual.getItems().stream().filter(item -> item.getPublicacion().getId() == publicacionId).findFirst().get();
             if (itemARemover.getCantidad() > 1) {
                 itemARemover.setCantidad(itemARemover.getCantidad() - 1);
@@ -162,7 +190,17 @@ public class CarritoController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+
+    // Este metodo ejecuta la venta cuando el comprador llena sus datos y elije el tipo de pago, crea distintas instancias de los modelos relacionales de la 
+    // base de datos como por ejemplo la direccion, el tipo de pago, el cliente, etc. 
+    // La particularidad es que si no existe un usuario logueado lo crea en el momento, si la direccion no existe, tambien la crea en el momento, entre otras 
+    // validaciones que realiza.
+
+    // This method executes the sale when the buyer fills in their data and chooses the type of payment, it creates different instances of the relational
+    // models of the database such as the address, the type of payment, the client, etc.
+    // The peculiarity is that if there is no logged in user, it creates it at the moment, if the address does not exist, it also creates it at the moment, 
+    // among other validations that it performs.
+    @CrossOrigin(origins = "https://capgemini-tp-licuadora.web.app")
     @PostMapping("/{carritoId}/venta")
     public  ResponseEntity<String> ventaRealizada(
             @PathVariable(name="carritoId") Integer carritoId,
@@ -224,80 +262,6 @@ public class CarritoController {
         }
      }
 
-
-
-    /*
-    NO USAR
-    @Transactional
-    @PostMapping({"/", ""})
-    public ResponseEntity<String> createCarrito(@RequestBody @Valid CarritoDTO carritoEntrante,
-                                                BindingResult bindingResult) {
-        try {
-                if (!bindingResult.hasErrors()) {
-                    Cliente cliente;
-                        System.out.println(carritoEntrante.getClienteId());
-
-                    if (carritoEntrante.getNombre() != null && carritoEntrante.getApellido() != null && carritoEntrante.getMail() != null && carritoEntrante.getClienteId() == null){
-                        cliente = repoCliente.save(new Cliente(carritoEntrante.getNombre(), carritoEntrante.getApellido(), null , carritoEntrante.getMail() , null, LocalDateTime.now()));
-                    } else if (repoCliente.existsById(carritoEntrante.getClienteId())) {
-                        cliente = repoCliente.findById(carritoEntrante.getClienteId()).get();
-                    } else {
-                        return ResponseEntity.badRequest().body("El cliente no existe");
-                    }
-
-                    if (!repoTipoDePago.existsById(carritoEntrante.getTipoDePagoId())) {
-                        return ResponseEntity.badRequest().body("El tipo de pago no existe");
-                    }
-
-                    TipoDePago pago = repoTipoDePago.findById(carritoEntrante.getTipoDePagoId()).get();
-
-                    Direccion direccion;
-
-                    if (carritoEntrante.getDireccionId()!=null && !repoDireccion.existsById(carritoEntrante.getDireccionId())){
-
-                        return ResponseEntity.badRequest().body("La direccion no existe");
-
-                    } else if (carritoEntrante.getDireccionId()==null){
-
-                        direccion = repoDireccion.save(new Direccion(carritoEntrante.getCalle(),
-                                carritoEntrante.getAltura(), carritoEntrante.getPiso(),
-                                carritoEntrante.getDepartamento(),
-                                carritoEntrante.getLocalidad(),
-                                carritoEntrante.getProvincia(),
-                                cliente, LocalDateTime.now()));
-                    } else {
-
-                        direccion = repoDireccion.findById(carritoEntrante.getDireccionId()).get();
-
-                    }
-
-                    Carrito carrito = new Carrito(carritoEntrante.getPrecioTotal(), LocalDateTime.now());
-
-                    carritoEntrante.getItems().forEach(item -> {
-                        if (!repoPublicacion.existsById(item.getPublicacionId())) {
-                            throw new RuntimeException("La publicacion no existe");
-                        }
-                        Publicacion publicacionActual = repoPublicacion.findById(item.getPublicacionId()).get();
-                        ItemCarrito itemActual = new ItemCarrito(publicacionActual, item.getCantidad(), item.getPrecioUnitario(), item.getSubTotal(), LocalDateTime.now());
-                        repoItemCarrito.save(itemActual);
-                        carrito.agregarItemCarrito(itemActual);
-                        repoCarrito.save(carrito);
-                    });
-
-                    repoVenta.save(new Venta(carrito, direccion, pago, cliente, LocalDateTime.now()));
-
-
-
-                    return ResponseEntity.ok("Carrito creado con exito");
-                } else {
-                    return ResponseEntity.badRequest().body("Error en los datos del carrito");
-                }
-            } catch (Exception e) {
-                return ResponseEntity.badRequest().body("Error al crear el carrito");
-            }
-    }
-
-     */
 
 
 }

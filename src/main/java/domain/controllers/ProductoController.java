@@ -47,6 +47,7 @@ public class ProductoController {
 
 
     //Traigo todos los productos que no esten borrados
+    //Get all products that are not deleted
     @GetMapping({"/", ""})
     public ResponseEntity<?> traerTodos() {
 
@@ -63,6 +64,7 @@ public class ProductoController {
     }
 
     //Traigo un producto en particular
+    //Get a specific product
     @GetMapping("/{id}")
     public ResponseEntity<?> traerPorId(@PathVariable Integer id) {
         TypedQuery<DTOProducto> dtoProductoIds = entityManager.createQuery(
@@ -77,6 +79,7 @@ public class ProductoController {
     }
 
     //Borro un producto, colocando la fecha de baja, tambien a sus posibles personalizaciones
+    //Delete a product, setting the deletion date, also to its possible personalizations
     @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
@@ -95,6 +98,7 @@ public class ProductoController {
     }
 
     //Borro una personalizacion de un producto
+    //Delete a product's personalization
     @Transactional
     @DeleteMapping("/{id}/posible-personalizacion/{idPersonalizacion}")
     public ResponseEntity<String> eliminarPersonalizacion(@PathVariable Integer id, @PathVariable Integer idPersonalizacion) {
@@ -113,6 +117,7 @@ public class ProductoController {
     }
 
     //Creo un producto a partir de un DTO producto
+    //Create a product from a DTO product
     @PostMapping({"/", ""})
     public ResponseEntity<String> crearProducto(@RequestBody @Valid ProductoDTO producto, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
@@ -137,7 +142,8 @@ public class ProductoController {
         }
     }
 
-//     //Modifico un producto a partir de un DTO producto
+    //Modifico un producto a partir de un DTO producto
+    //Modify a product from a DTO product
     @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<String> modificarProducto(@PathVariable(name = "id") Integer id,
@@ -165,6 +171,7 @@ public class ProductoController {
     }
 
     //Puedo modificar la categoria del producto
+    //I can modify the category of the product
     @Transactional
     @PatchMapping("/{id}/categoria")
     public ResponseEntity<String> modificarCategoria(@PathVariable(name = "id") Integer id,
@@ -181,6 +188,7 @@ public class ProductoController {
     }
 
     //Puedo modificar una posible personalizacion del producto ya creada
+    //I can modify a possible customization of the product already created
     @Transactional
     @PatchMapping("/{id}/posible-personalizacion/{idPosiblePersonalizacion}")
     public ResponseEntity<String> editarPosiblePersonalizacion(@PathVariable(name="id") Integer id,
@@ -223,6 +231,7 @@ public class ProductoController {
     }
 
     //Creo una posible personalizacion para un producto
+    //I create a possible customization for a product
     @Transactional
     @PostMapping("/{id}/posible-personalizacion")
     public ResponseEntity<String> agregarPosiblePersonalizacion(@PathVariable(name="id") Integer id, @RequestBody
